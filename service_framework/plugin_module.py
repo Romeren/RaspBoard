@@ -7,16 +7,16 @@ import atexit
 import fnmatch
 import json
 import re
+from service_framework.common_modules import ui_modules as uim
+from service_framework.events.event_module import Event as frameworkEvent
+from service_framework.events.event_module import EventDispatcher as dispatcher
+from service_framework.events.event_module import Service_Changed_Event as service_changed  # NOQA
 import signal
 import time
 from tornado import web, ioloop  # NOQA
 from threading import Event
 from threading import Thread
 import zmq
-from service_framework.events.event_module import EventDispatcher as dispatcher
-from service_framework.events.event_module import Service_Changed_Event as service_changed
-from service_framework.events.event_module import Event as frameworkEvent
-from service_framework.common_modules import ui_modules as uim
 
 
 class Plugin_module(object):
@@ -37,10 +37,10 @@ class Plugin_module(object):
 
         if('ui_modules' not in self.settings):
             self.settings["ui_modules"] = {
-                            "Rest_Service_Module": uim.Rest_Service_Module,
-                            "Websocket_Service_Module": uim.Websock_Service_Module,
-                            "Head_Module": uim.Head_Module
-                            }
+                "Rest_Service_Module": uim.Rest_Service_Module,
+                "Websocket_Service_Module": uim.Websock_Service_Module,
+                "Head_Module": uim.Head_Module
+                }
         else:
             self.settings["ui_modules"]["Rest_Service_Module"] = uim.Rest_Service_Module
             self.settings["ui_modules"]["Websocket_Service_Module"] = uim.Websock_Service_Module
@@ -186,7 +186,7 @@ class Plugin_module(object):
     def subscribe_to_broker(self, isSubscribing):
         for config in self.service_configurations:
             dependencies = []
-            
+
             if("dependencies" not in config):
                 config["dependencies"] = []
 
@@ -390,7 +390,7 @@ class Plugin_module(object):
         print("Terminating...")
         # unsubscripe from broker:
         self.subscribe_to_broker(isSubscribing=False)
-        
+
         # stop all threads
         self.stop_event.set()
         time.sleep(1)

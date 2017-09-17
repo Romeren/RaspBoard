@@ -7,15 +7,14 @@ class Service(abstract_plugin):
         self.module = module
 
     def get(self):
-        html_path = "html/home.html"
+        html_path = "html/tile.html"
         context = self.get_basic_context(config)
         self.render_response(html_path, context=context)
 
-config = {"service_name": "home",
+config = {"service_name": "clock",
           "handler": Service,
           "service_type": "rest",
-          "service_category": "page",
+          "service_category": "tile",
           "dependencies": [
-              {'name': 'tiles', 'service': "rest/tile/*"},
           ]
           }

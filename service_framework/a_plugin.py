@@ -3,16 +3,16 @@
 """
 # from plugin_module import Plugin_module
 import json
-import sys
 import os.path
+import sys
 from tornado import gen
 from tornado import httpclient
+from tornado import template
 from tornado import web
 from tornado import websocket
-from tornado import template
 from urllib import urlencode
-from threading import Lock
 cl = []
+
 
 class BaseHandler(object):
     """docstring for """
@@ -46,7 +46,7 @@ class BaseHandler(object):
         context['references']['self'] = selfRef
         context['references'][config['service_name']] = selfRef
 
-        jsRef = next(self.module.get_services('rest/miscellanceous/javascripts'), None)
+        jsRef = next(self.module.get_services('rest/misc/javascripts'), None)
         context['references']['javascript'] = [self.make_dependency_ref(jsRef)]
         # add reference to all dependencies:
         if("dependencies" not in config):
@@ -78,11 +78,11 @@ class BaseHandler(object):
                           addr,
                           error=False):
         return {
-                "name": service_name.replace("_", " "),
-                "service_name_js": service_name.replace("/", "\\\/"),
-                "service_name": service_name,
-                "address": addr,
-                "hasError": error
+            "name": service_name.replace("_", " "),
+            "service_name_js": service_name.replace("/", "\\\/"),
+            "service_name": service_name,
+            "address": addr,
+            "hasError": error
             }
 
     def get_service_address_from_request(self, request):
@@ -122,11 +122,12 @@ class BaseHandler(object):
                             method="GET",
                             headers=header)
 
+
 class ThreadHandler(BaseHandler):
 
     def __init__(self):
         super(ThreadHandler, self).__init__()
-    
+
     def initialize(self, module, stop_event):
         # this method is called as a new thread on start
         self.module = module
@@ -260,9 +261,9 @@ class RestHandler(web.RequestHandler, BaseHandler):
             context["loggedin"] = False
         return context
 
-
     def render_response(self, template_name, **kwargs):
-        # render the response for an request by populating the specified template with the given context/key-value argument. 
+        # render the response for an request by populating the specified
+        # template with the given context/key-value argument.
         if self._finished:
             raise RuntimeError("Cannot render() after finish()")
 
@@ -284,9 +285,10 @@ class RestHandler(web.RequestHandler, BaseHandler):
         path = os.path.join(root, template_name)
 
         # set parameters for lazyload:
-        top = '<!DOCTYPE html>\n<html>\n{% module Head_Module(context) %}\n<body>'
+        top = '<!DOCTYPE html>\n<html>\n{% module Head_Module(context) %}'
+        top += '\n<body>'
         buttom = '</body>\n</html>'
-        #print(kwargs)
+        # print(kwargs)
         context = kwargs['context']
         if("isLazyLoad" in context):
             # print("found is lazyload " + str(context['isLazyLoad']))
@@ -301,7 +303,7 @@ class RestHandler(web.RequestHandler, BaseHandler):
             top += f.read()
             top += buttom
             t = template.Template(top, name=template_name)
-        
+
         namespace = self.get_template_namespace()
         namespace.update(kwargs)
 
