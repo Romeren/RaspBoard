@@ -1,7 +1,57 @@
 <html>
 <head>
+    <!-- jqUERY -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script>
+
+        <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+
+
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"> -->
+
+
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 </head>
 <body>
-    Hello world
+    <div class="masonry">
+      <div class="item card blue-grey darken-1">
+             <div class="card-content white-text">
+               <span class="card-title">Card Title</span>
+               <p>I am a very simple card. I am good at containing small bits of information.
+               I am convenient because I require little markup to use effectively.</p>
+             </div>
+             <div class="card-action">
+               <a href="#">This is a link</a>
+               <a href="#">This is a link</a>
+             </div>
+      </div>
+    </div>
 </body>
+
+<style>
+
+body {
+    font-family: sans-serif;
+    background-color: #EEE;
+}
+
+.item {
+  width:  30%;
+  float: left;
+  border-radius: 5px;
+}
+</style>
+<script>
+// masonry.pkgd.js added as external resource
+
+$( function() {
+
+  var $container = $('.masonry').masonry({
+  });
+});
+
+</script>
 </html>
