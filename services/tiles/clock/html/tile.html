@@ -1,17 +1,137 @@
-<div class="item card blue-grey darken-1">
-    <div class="card-content white-text">
-        <span class="card-title">Card </span>
+<div class="item card green white-text"">
+    <div id="clock-wrapper" class="card-content white-text">
+        <div class="row">
+            <div class="center">
+                <div class="flippy">
+                    <span class="day small">(( hour ))</span>
+                </div>
+                <div class="flippy">
+                    <span class="day small">(( minutes ))</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="flippy">
+                <span class="day">(( day )) <sub class="subbed">th</sub></span>
+                <span class="month">(( month ))</span>
+            </div>
+            <div class="flippy">
+                <span class="day">(( year ))</span>
+            </div>
+        </div>
     </div>
-    <div class="card-action">
+<!--     <div class="card-action">
         <a href="#">This is a link</a>
         <a href="#">This is a link</a>
-    </div>
+    </div> -->
 </div>
 
-<script>
-$( function() {
+<style type="text/css">
 
+.flippy {
+    position: relative;
+    display: inline-block;
+    background-color: #706F9C;
+    border-radius: 20px;
+    box-shadow: 0 5px 50x #000;
+    color: white;
+    height: 120px;
+    
+    transition: 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flippy .day {
+    text-align: center;
+    font-size: 100px;
+    line-height: 120px;
+    padding: 10px 5px;
+    font-weight: bold;
+}
+
+.subbed {
+    font-weight: bold;
+    font-size: 20px;
+    top: -35%;
+    left: -15%;
+}
+
+.flippy .month {
+    position: absolute;
+    display: block;
+    text-align: center;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+.flippy:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    height: 60px;
+    width: 100%;
+
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(rgba(0,0,0,0)), color-stop(0.4, rgba(0,0,0,0)), to(rgba(0,0,0,0.20)));
+    background: -webkit-linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.20) 100%);
+    background: -moz-linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.20) 100%);
+    background: -o-linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.20) 100%);
+    background: linear-gradient(rgba(0,0,0,0) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.20) 100%);
+
+    border-radius: 20px 20px 0 0;
+    border-bottom: solid 1px rgba( 0,0,0, 0.4 );
+}
+
+.flippy:hover {
+    transform: rotateX(180deg);
+}
+
+</style>
+<script>
+
+
+$( function() {
   var $container = $('.masonry').masonry({
   });
+
+  var clock = new Vue({
+    el: '#clock-wrapper',
+    data: {
+        day: '',
+        month: '',
+        hour: '',
+        minutes: '',
+        year: ''
+        },
+    delimiters: ['((', '))']
+    });
+
+    var week = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    var monts = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var timerID = setInterval(updateTime, 1000);
+    function updateTime() {
+        var cd = new Date();
+        clock.day = zeroPadding(cd.getDate(), 2);
+        clock.month = monts[cd.getMonth()];
+        clock.hour = zeroPadding(cd.getHours(),2);
+        clock.minutes = zeroPadding(cd.getMinutes(),2);
+        clock.year = zeroPadding(cd.getFullYear(),4);
+        // clock.date = zeroPadding(cd.getFullYear(), 4) + '-' + zeroPadding(cd.getMonth()+1, 2) + '-' + zeroPadding(cd.getDate(), 2) + ' ' + week[cd.getDay()];
+    };
+    updateTime();
+
+    function zeroPadding(num, digit) {
+        var zero = '';
+        for(var i = 0; i < digit; i++) {
+            zero += '0';
+        }
+        return (zero + num).slice(-digit);
+    }
 });
 </script>
