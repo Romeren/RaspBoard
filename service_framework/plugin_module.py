@@ -4,17 +4,13 @@ handles subscriping to server and sending heartbeats.
 """
 
 import atexit
-import fcntl
-import fnmatch
 import json
-import re
+from service_framework.common import utilities as util
 from service_framework.common_modules import ui_modules as uim
 from service_framework.events.event_module import Event as frameworkEvent
 from service_framework.events.event_module import EventDispatcher as dispatcher
 from service_framework.events.event_module import Service_Changed_Event as service_changed  # NOQA
 import signal
-import socket
-import struct
 import time
 from tornado import web, ioloop  # NOQA
 from threading import Event
@@ -28,7 +24,7 @@ class Plugin_module(object):
         self.is_active = True
         self.is_exiting = False
         # self.heartbeat_interval = 120.0
-        self.address = self.get_own_ipaddress()
+        self.address = util.get_own_ipaddress()
         self.port = 5555
         self.pluginPort = None
         self.threads = []
@@ -75,18 +71,6 @@ class Plugin_module(object):
             t.start()
         self.start_webserver(app)
 
-# --------------------------------------------------------
-# Utilities
-# --------------------------------------------------------
-    def get_own_ipaddress(slef):
-        # TODO(): GENERALIZE SOLUTION:
-        iface = 'eth0'
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        return socket.inet_ntoa(fcntl.ioctl(
-            s.fileno(),
-            0x8915,  # SIOCGIFADDR
-            struct.pack('256s', iface[:15])
-        )[20:24])
 
 # --------------------------------------------------------
 # Broker request functions
@@ -235,7 +219,7 @@ class Plugin_module(object):
     def get_services(self, topic):
         # request plugin at broker:
         topic += "/*"
-        clients = self.__get_matching(self.__get_services(), topic)
+        clients = util.get_matching(self.__get_services(), topic)
 
         elm = []
         for key in clients:
@@ -246,7 +230,7 @@ class Plugin_module(object):
 
     def get_service(self, topic):
         topic += "/*"
-        clients = self.__get_matching(self.__get_services(), topic)
+        clients = util.get_matching(self.__get_services(), topic)
         elm = None
         for key in clients:
             elm = self.__get_services()[key]
@@ -265,16 +249,16 @@ class Plugin_module(object):
         topics.append(javascrTopic)
         plugins = self.get_plugins_from_broker(topic=(javascrTopic + "/*"))
         for service in plugins:
-                        topic = self.__build_topic_from_request(service)
+                        topic = util.build_topic_from_request(service)
                         topics.append(topic)
                         self.__get_services()[topic] = service
 
         # add all dependencies for the configurations:
         for config in self.service_configurations:
-            topic = self.__build_topic(config[fields[0]],
-                                       config[fields[1]],
-                                       config[fields[2]],
-                                       self.address)
+            topic = util.build_topic(config[fields[0]],
+                                     config[fields[1]],
+                                     config[fields[2]],
+                                     self.address)
             topics.append(topic)
 
             plugin = self.get_plugins_from_broker(config[fields[0]],
@@ -288,7 +272,7 @@ class Plugin_module(object):
                     topics.append(dep["service"])
                     plugins = self.get_plugins_from_broker(topic=(dep["service"] + "/*"))
                     for service in plugins:
-                        topic = self.__build_topic_from_request(service)
+                        topic = util.build_topic_from_request(service)
                         topics.append(topic)
                         self.__get_services()[topic] = service
         # print("topics for plugin", topics)
@@ -366,38 +350,6 @@ class Plugin_module(object):
 
     def __make_fall_back_path(self, service_name):
         return r'\/' + str(service_name) + r"\/|\/" + str(service_name)
-
-    def __build_topic_from_request(self, request):
-        service_type = "*"
-        service_category = "*"
-        service_name = "*"
-        host_address = "*"
-        if("service_type" in request):
-            service_type = request["service_type"]
-        if("service_name" in request):
-            service_name = request["service_name"]
-        if("host_address" in request):
-            host_address = request["host_address"]
-        if("service_category" in request):
-            service_category = request["service_category"]
-
-        return self.__build_topic(service_type,
-                                  service_category,
-                                  service_name,
-                                  host_address)
-
-    def __build_topic(self,
-                      service_type,
-                      service_category,
-                      service_name,
-                      host_address):
-        topic = service_type + "/" + service_category + "/" + service_name + "/" + host_address  # NOQA
-        return topic
-
-    def __get_matching(self, dictionary, topic):
-        regex = fnmatch.translate(str(topic))
-        reObj = re.compile(regex)
-        return (key for key in dictionary if reObj.search(str(key)))
 
 # --------------------------------------------------------
 # Exit and termination handlers:

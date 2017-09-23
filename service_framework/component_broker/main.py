@@ -2,10 +2,9 @@
 """ docstring
 """
 
-import fnmatch
 import json
-import re
-from service_framework.events.event_module import Broker_Event
+# from service_framework.events.event_module import Broker_Event
+from service_framework.common import utilities as util
 from service_framework.events.event_module import Service_Changed_Event
 import time
 import zmq
@@ -40,12 +39,6 @@ class PluginClients(object):
                 "service_dependencies": self.dependencies}
 
 
-def get_matching(dictionary, topic):
-    regex = fnmatch.translate(str(topic))
-    reObj = re.compile(regex)
-    return (key for key in dictionary if reObj.search(key))
-
-
 def handle_get_services(message):
     # gets all the plugins based on provided information:
     # {
@@ -70,9 +63,9 @@ def handle_get_services(message):
     if "topic" in request:
         topic = request["topic"]
     else:
-        topic = __build_topic_from_request(request)
+        topic = util.build_topic_from_request(request)
 
-    clients = get_matching(plugins, topic)
+    clients = util.get_matching(plugins, topic)
 
     # response:
     reply = {"status": 200, "services": []}
@@ -105,9 +98,9 @@ def handle_get_service(message):
     if "topic" in request:
         topic = request["topic"]
     else:
-        topic = __build_topic_from_request(request)
+        topic = util.build_topic_from_request(request)
 
-    clients = get_matching(plugins, topic)
+    clients = util.get_matching(plugins, topic)
 
     service = None
     for key in clients:
@@ -129,7 +122,7 @@ def handle_plugins_register_unregister(message):
     # print(message)
     subscriping = message["subscribe"]
     port = message["port"]
-    topic = topic = __build_topic_from_request(message)
+    topic = util.build_topic_from_request(message)
 
     if(topic in plugins):
         if subscriping:
@@ -185,7 +178,7 @@ def handle_request_config(message):
 
     # print("config_in:", message)
     obtained_ports = []
-    for plugin in get_matching(plugins, "*/*/*/" + host):
+    for plugin in util.get_matching(plugins, "*/*/*/" + host):
         obtained_ports.append(plugins[plugin].port)
 
     port_taken = True
@@ -208,31 +201,6 @@ def handle_request_config(message):
     return reply
 
 
-def __build_topic_from_request(request):
-    service_type = "*"
-    service_category = "*"
-    service_name = "*"
-    host_address = "*"
-    if("service_type" in request):
-        service_type = request["service_type"]
-    if("service_name" in request):
-        service_name = request["service_name"]
-    if("host_address" in request):
-        host_address = request["host_address"]
-    if("service_category" in request):
-        service_category = request["service_category"]
-
-    return __build_topic(service_type,
-                         service_category,
-                         service_name,
-                         host_address)
-
-
-def __build_topic(service_type, service_category, service_name, host_address):
-    topic = service_type + "/" + service_category + "/" + service_name + "/" + host_address  # NOQA
-    return topic
-
-
 def __publish_event(topic, message):
     publisher_socket.send_multipart([bytearray(topic, "utf-8"),
                                      bytearray(json.dumps(message), "utf-8")])
@@ -244,7 +212,8 @@ brokerPort = usedports[0]
 publisherPort = usedports[1]
 context = zmq.Context()
 server_socket = context.socket(zmq.REP)
-server_socket.bind("tcp://127.0.0.1:" + str(brokerPort))
+
+server_socket.bind("tcp://" + util.get_own_ipaddress() + ":" + str(brokerPort))
 
 publisher_socket = context.socket(zmq.PUB)
 publisher_socket.bind("tcp://*:%s" % publisherPort)
