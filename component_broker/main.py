@@ -5,10 +5,10 @@
 import fnmatch
 import json
 import re
+from service_framework.events.event_module import Broker_Event
+from service_framework.events.event_module import Service_Changed_Event
 import time
 import zmq
-from service_framework.events.event_module import Service_Changed_Event
-from service_framework.events.event_module import Broker_Event
 
 
 class PluginClients(object):

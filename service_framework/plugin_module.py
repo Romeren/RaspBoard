@@ -4,6 +4,7 @@ handles subscriping to server and sending heartbeats.
 """
 
 import atexit
+import fcntl
 import fnmatch
 import json
 import re
@@ -12,6 +13,8 @@ from service_framework.events.event_module import Event as frameworkEvent
 from service_framework.events.event_module import EventDispatcher as dispatcher
 from service_framework.events.event_module import Service_Changed_Event as service_changed  # NOQA
 import signal
+import socket
+import struct
 import time
 from tornado import web, ioloop  # NOQA
 from threading import Event
@@ -25,7 +28,7 @@ class Plugin_module(object):
         self.is_active = True
         self.is_exiting = False
         # self.heartbeat_interval = 120.0
-        self.address = "localhost"
+        self.address = self.get_own_ipaddress()
         self.port = 5555
         self.pluginPort = None
         self.threads = []
@@ -71,6 +74,19 @@ class Plugin_module(object):
         for t in self.threads:
             t.start()
         self.start_webserver(app)
+
+# --------------------------------------------------------
+# Utilities
+# --------------------------------------------------------
+    def get_own_ipaddress(slef):
+        # TODO(): GENERALIZE SOLUTION:
+        iface = 'eth0'
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        return socket.inet_ntoa(fcntl.ioctl(
+            s.fileno(),
+            0x8915,  # SIOCGIFADDR
+            struct.pack('256s', iface[:15])
+        )[20:24])
 
 # --------------------------------------------------------
 # Broker request functions
