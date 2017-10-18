@@ -4,6 +4,13 @@
 
 <script>
 $(document).ready(()=>{
+    window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
+    window.castReceiverManager.start();
 
+    var customMessageBus = castReceiverManager.getCastMessageBus('urn:x-cast:dashboard.com.framework');
+
+    customMessageBus.onMessage = function(event) {
+       console.log("Message");
+    }
 });
 </script>
