@@ -1,16 +1,23 @@
 <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
 
-<h1 style="color: white; font-size: 60px;">TEST</h1>
+<h1 id="test" style="color: white; font-size: 60px;">TEST</h1>
 
 <script>
-$(document).ready(()=>{
-    window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-    window.castReceiverManager.start();
+window.onload = function() {
+      window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
 
-    var customMessageBus = castReceiverManager.getCastMessageBus('urn:x-cast:dashboard.com.framework');
-
-    customMessageBus.onMessage = function(event) {
-       console.log("Message");
-    }
-});
+      castReceiverManager.onReady = function(event) {
+        window.castReceiverManager.setApplicationState('Reciever ready...');
+      };
+      // messages on a custom namespace
+      var ns = 'urn:x-cast:dashboard.com.framework';
+      window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
+      window.messageBus.onMessage = function(e) {
+        // var msg = JSON.parse(e.data);
+        //window.messageBus.send(e.senderId, 'ok')
+        document.getElementById('test').innerHTML = e.data;
+      };
+      // initialize CastReceiverManager
+      window.castReceiverManager.start({statusText: 'Reciever starting...'});
+};
 </script>
