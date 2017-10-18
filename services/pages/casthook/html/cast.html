@@ -3,7 +3,9 @@
 <h1 id="test" style="color: white; font-size: 60px;">TEST</h1>
 
 <script>
+document.getElementById('test').innerHTML = "FIRST";
 window.onload = function() {
+    window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
       document.getElementById('test').innerHTML = "ONLOAD";
 
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
