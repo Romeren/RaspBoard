@@ -16,6 +16,10 @@ plugins.append(clock)
 from services.pages.dashboard.restservice import config as dashboard  # NOQA
 plugins.append(dashboard)
 
+# chrome cast hook
+from services.pages.casthook.restservice import config as cast  # NOQA
+plugins.append(cast)
+
 
 system_settings = {'port': 8080}
 framework(plugins,
