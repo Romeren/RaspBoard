@@ -7,8 +7,10 @@ window.onload = function() {
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
 
       castReceiverManager.onReady = function(event) {
-        window.castReceiverManager.setApplicationState('Reciever ready...');
-      };
+          setTimeout(function(){
+            window.castReceiverManager.setApplicationState('Reciever ready...');
+        }, 1000);
+    };
       // messages on a custom namespace
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
