@@ -25,6 +25,7 @@ class Plugin_module(object):
         self.is_exiting = False
         # self.heartbeat_interval = 120.0
         self.address = util.get_own_ipaddress()
+        #self.address = '192.168.2.30'
         self.port = 5555
         self.pluginPort = None
         self.threads = []

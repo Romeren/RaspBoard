@@ -19,7 +19,7 @@ class PluginClients(object):
                  port,
                  service_category,
                  time,
-                 dependencies = []):
+                 dependencies=[]):
         self.hostname = hostname
         self.port = port
         self.time = time
@@ -213,7 +213,10 @@ publisherPort = usedports[1]
 context = zmq.Context()
 server_socket = context.socket(zmq.REP)
 
-server_socket.bind("tcp://" + util.get_own_ipaddress() + ":" + str(brokerPort))
+address = util.get_own_ipaddress()
+# address = "192.168.2.30"
+
+server_socket.bind("tcp://" + address + ":" + str(brokerPort))
 
 publisher_socket = context.socket(zmq.PUB)
 publisher_socket.bind("tcp://*:%s" % publisherPort)
