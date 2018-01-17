@@ -1,7 +1,7 @@
 # RaspBoard
 Dashboard but on a Raspberry
 
-Microservice architecture
+Microservice architecture for luanching small Rest services
 
 Built using:
     *   Tornado Web
