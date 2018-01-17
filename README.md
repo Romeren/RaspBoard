@@ -7,7 +7,8 @@ Built using:
 
 Contains:
     Framework:
-        Component_broker
+        * Component_broker
+        * Abstract Microservice template
         
     Pages:
         * A Chrome cast application, that can be luanched on a chromecast to browse websites.
