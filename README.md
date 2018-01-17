@@ -3,6 +3,7 @@ Dashboard but on a Raspberry
 
 Built using:
     *   Tornado Web
+    *   ZeroMq
 
 Contains:
     Framework:
