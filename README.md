@@ -1,6 +1,8 @@
 # RaspBoard
 Dashboard but on a Raspberry
 
+Microservice architecture
+
 Built using:
     *   Tornado Web
     *   ZeroMq
