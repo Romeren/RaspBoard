@@ -1,6 +1,6 @@
 from tornado import web, ioloop  # NOQA
-from service_framework.common import utilities as util
-from service_framework.common_modules import ui_modules as uim
+from RaspBoard.service_framework.common import utilities as util
+from RaspBoard.service_framework.common_modules import ui_modules as uim
 
 
 class Container(object):

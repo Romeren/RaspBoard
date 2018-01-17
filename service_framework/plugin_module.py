@@ -5,11 +5,11 @@ handles subscriping to server and sending heartbeats.
 
 import atexit
 import json
-from service_framework.common import utilities as util
-from service_framework.common_modules import ui_modules as uim
-from service_framework.events.event_module import Event as frameworkEvent
-from service_framework.events.event_module import EventDispatcher as dispatcher
-from service_framework.events.event_module import Service_Changed_Event as service_changed  # NOQA
+from RaspBoard.service_framework.common import utilities as util
+from RaspBoard.service_framework.common_modules import ui_modules as uim
+from RaspBoard.service_framework.events.event_module import Event as frameworkEvent
+from RaspBoard.service_framework.events.event_module import EventDispatcher as dispatcher
+from RaspBoard.service_framework.events.event_module import Service_Changed_Event as service_changed  # NOQA
 import signal
 import time
 from tornado import web, ioloop  # NOQA

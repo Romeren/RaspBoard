@@ -1,6 +1,6 @@
 import zmq
 import json
-from service_framework.events.event_module import Event as frameworkEvent
+from RaspBoard.service_framework.events.event_module import Event as frameworkEvent
 
 class Event_Subscriber(object):
     """docstring for Event_Subscriber"""

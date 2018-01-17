@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-  # NOQA
-from service_framework.a_plugin import RestHandler as abstract_plugin  # NOQA
+from RaspBoard.service_framework.a_plugin import RestHandler as abstract_plugin  # NOQA
 
 
 class Service(abstract_plugin):
