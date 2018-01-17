@@ -26,14 +26,14 @@ class BaseHandler(object):
     def dump_message(self, message):
         try:
             return json.dumps(message)
-        except Exception, e:
+        except Exception as e:
             print('JSON COULD NOT BE PARSED')
             return None
 
     def load_message(self, message):
         try:
             return json.loads(message)
-        except Exception, e:
+        except Exception as e:
             print("MESSAGE COULD NOT BE PARSED!")
             return None
 
