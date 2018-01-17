@@ -22,5 +22,4 @@ Contains:
         * More comming soon!
 
 
-
-Your very welcome ;)
+No, thank you!
