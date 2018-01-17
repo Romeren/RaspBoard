@@ -2,6 +2,7 @@
 Dashboard but on a Raspberry
 
 Microservice architecture for luanching small Rest services
+Everything is REST
 
 Built using:
     *   Tornado Web
