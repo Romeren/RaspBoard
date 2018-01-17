@@ -4,8 +4,8 @@
 
 import json
 # from service_framework.events.event_module import Broker_Event
-from service_framework.common import utilities as util
-from service_framework.events.event_module import Service_Changed_Event
+from RaspBoard.service_framework.common import utilities as util
+from RaspBoard.service_framework.events.event_module import Service_Changed_Event
 import time
 import zmq
 
