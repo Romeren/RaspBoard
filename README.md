@@ -4,8 +4,12 @@ Dashboard but on a Raspberry
 Microservice architecture for luanching small Rest services.
 
 Built using:
+    *   Python
     *   Tornado Web
     *   ZeroMq
+
+Built to run on:
+    * Raspberry Pi
 
 Contains:
     Framework:
