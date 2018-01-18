@@ -7,5 +7,5 @@ config = {
     "service_type": "rest",
     "service_category": "misc",
     "path": r"/javascripts/(.*)",
-    "handler_settings": {'path': "services/misc/scripts"}
+    "handler_settings": {'path': "RaspBoard/services/misc/scripts"}
 }
