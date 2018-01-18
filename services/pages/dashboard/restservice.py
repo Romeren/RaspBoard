@@ -16,6 +16,6 @@ config = {"service_name": "home",
           "service_type": "rest",
           "service_category": "page",
           "dependencies": [
-              {'name': 'tiles', 'service': "rest/tile/*"},
+              {'name': 'tiles', 'service': "rest/tile/slideshow"},
           ]
           }
