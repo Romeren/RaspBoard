@@ -221,13 +221,12 @@ class Plugin_module(object):
         # request plugin at broker:
         topic += "/*"
         clients = util.get_matching(self.__get_services(), topic)
-
-        elm = []
+        # elm = []
         for key in clients:
             yield self.__get_services()[key]
-            #elm.append(self.__get_services()[key])
+            # elm.append(self.__get_services()[key])
 
-        #return elm
+        # return elm
 
     def get_service(self, topic):
         topic += "/*"

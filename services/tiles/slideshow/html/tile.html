@@ -9,7 +9,7 @@ $(function(){
     setInterval(function(){
         $.ajax({
             type: 'GET',
-            url: '{{ context['references']['random_image'][0]['address'] }}',
+            url: '{{ context.references.random_image[0].address }}',
             success: function(res){
                 $('#slideshow-img')[0].src = res;
             },

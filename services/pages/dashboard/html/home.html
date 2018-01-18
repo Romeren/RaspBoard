@@ -1,5 +1,5 @@
 <div class="masonry">
-    {% for tile in context['references']['tiles'] %}
+    {% for tile in context.references.tiles %}
         {% module Rest_Service_Module(tile) %}
     {% end %}
 </div>

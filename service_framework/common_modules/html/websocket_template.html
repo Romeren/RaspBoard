@@ -1,7 +1,7 @@
-<div id="{{ content["service_name"] }}">
+<div id="{{ content.service_name }}">
 </div>
 <script>
 $( document ).ready(function() {
-    plugin_handler.connect('{{ content["address"] }}',"{{ content["service_name_js"] }}");
+    plugin_handler.connect('{{ content.address }}',"{{ content.service_name_js }}");
 });
 </script>

@@ -1,7 +1,7 @@
-<div id="{{ content["service_name"] }}">
+<div id="{{ content.service_name }}">
 </div>
 <script>
 $( document ).ready(function() {
-    loadRestService("#{{ content["service_name_js"] }}","{{ content["address"]}}");
+    loadRestService("#{{ content.service_name_js }}","{{ content.address }}");
 });
 </script>
