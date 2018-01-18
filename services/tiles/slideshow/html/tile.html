@@ -1,0 +1,22 @@
+<div class="item card white-text">
+       <img id="slideshow-img" src="" alt="Image" width="200" height="300">
+</div>
+
+<style type="text/css">
+</style>
+<script>
+$(function(){
+    setInterval(function(){
+        $.ajax({
+            type: 'GET',
+            url: '{{ context['references']['random_image'][0]['address'] }}',
+            success: function(res){
+                $('#slideshow-img')[0].src = res;
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }, 5000);
+});
+</script>
