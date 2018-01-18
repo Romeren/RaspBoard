@@ -8,7 +8,7 @@ class Service(abstract_plugin):
         self.module = module
 
     def get(self):
-        url = 'https://picsum.photos/200/300/?image=' + str(rnd.randint(1, 400))
+        url = 'https://picsum.photos/1024/800/?image=' + str(rnd.randint(1, 400))
         self.write(url)
 
 config = {"service_name": "random_image",

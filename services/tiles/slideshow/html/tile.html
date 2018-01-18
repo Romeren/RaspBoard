@@ -1,11 +1,21 @@
 <div class="item card white-text">
-       <img id="slideshow-img" src="" alt="Image" width="200" height="300">
+       <img id="slideshow-img" src="" alt="Image" width="100%">
 </div>
 
 <style type="text/css">
 </style>
 <script>
 $(function(){
+    $.ajax({
+        type: 'GET',
+        url: '{{ context.references.random_image[0].address }}',
+        success: function(res){
+            $('#slideshow-img')[0].src = res;
+        },
+        error: function(err){
+            console.log(err);
+        }
+    });
     setInterval(function(){
         $.ajax({
             type: 'GET',
@@ -17,6 +27,6 @@ $(function(){
                 console.log(err);
             }
         });
-    }, 5000);
+    }, 20000);
 });
 </script>
