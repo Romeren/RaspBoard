@@ -1,8 +1,30 @@
 <div class="item card white-text">
-       <img id="slideshow-img" src="" alt="Image" width="100%">
+    <div id="slideshow">
+       <img class="top" src="" alt="Image" width="100%">
+       <img class="buttom" src="" alt="Image" width="100%">
+   </div>
 </div>
 
 <style type="text/css">
+#slideshow img {
+    position:absolute;
+    left:0;
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out
+}
+
+#slideshow img.top{
+    z-index: 1;
+    opacity: 1;
+}
+
+#slideshow img.buttom {
+    z-index: 0;
+    opacity: 0;
+}
+
 </style>
 <script>
 $(function(){
@@ -10,7 +32,7 @@ $(function(){
         type: 'GET',
         url: '{{ context.references.random_image[0].address }}',
         success: function(res){
-            $('#slideshow-img')[0].src = res;
+            $('#slideshow .top')[0].src = res;
         },
         error: function(err){
             console.log(err);
@@ -21,12 +43,19 @@ $(function(){
             type: 'GET',
             url: '{{ context.references.random_image[0].address }}',
             success: function(res){
-                $('#slideshow-img')[0].src = res;
+                $('#slideshow .buttom')[0].src = res;
+
+                setTimeout(function(){
+                    var buttom = $('#slideshow .buttom')
+                    var top = $('#slideshow .top');
+                    buttom.attr('class', 'top');
+                    top.attr('class', 'buttom');
+                },2000);
             },
             error: function(err){
                 console.log(err);
             }
         });
-    }, 20000);
+    }, 10000);
 });
 </script>
