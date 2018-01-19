@@ -17,7 +17,7 @@
     min-height: 300px;
     position:absolute;
     left:0;
-    -webkit-transition: opacity 10s ease-in-out;
+    -webkit-transition: opacity 4s ease-in;
     /*-webkit-transition: opacity 2s ease-in-out;
     -moz-transition: opacity 2s ease-in-out;
     -o-transition: opacity 2s ease-in-out;
@@ -25,10 +25,12 @@
 }
 
 #slideshower img.top{
+    z-index: 1;
     opacity: 1;
 }
 
 #slideshower img.buttom {
+    z-index: 0;
     opacity: 0;
 }
 
