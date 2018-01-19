@@ -98,7 +98,7 @@ function slideshower_recursion(){
                 slideshower_recursion();
             });
         }else{
-            slideshower_recursion();
+            setTimeout(slideshower_recursion(),3000);
         }
     });
 }
