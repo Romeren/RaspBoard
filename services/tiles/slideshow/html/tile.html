@@ -37,34 +37,47 @@
 </style>
 <script>
 $(function(){
-    $.ajax({
-        type: 'GET',
-        url: '{{ context.references.random_image[0].address }}',
-        success: function(res){
-            $('#slideshower .top')[0].src = res;
-        },
-        error: function(err){
-            console.log(err);
-        }
-    });
-    setInterval(function(){
+    function get_image_url(callback){
         $.ajax({
             type: 'GET',
             url: '{{ context.references.random_image[0].address }}',
             success: function(res){
-                $('#slideshower .buttom')[0].src = res;
-                $('#debug').html(res);
-                setTimeout(function(){
-                    var buttom = $('#slideshower .buttom')
-                    var top = $('#slideshower .top');
-                    buttom.attr('class', 'top');
-                    top.attr('class', 'buttom');
-                },4000);
+                callback(res);
             },
             error: function(err){
                 console.log(err);
+                callback(null;)
             }
         });
-    }, 10000);
+    }
+
+    function set_image(url, callback){
+        $('#slideshower .buttom')[0].src = url;
+        transition(callback);
+    }
+
+    function transition(callback){
+        setTimeout(function(){
+            var buttom = $('#slideshower .buttom')
+            var top = $('#slideshower .top');
+            buttom.attr('class', 'top');
+            top.attr('class', 'buttom');
+            setTimeout(callback, 10000);
+        },3000);
+    }
+
+    function slideshower_recursion(){
+        get_image_url(function(url){
+            if(url != null){
+                set_image(url, function(){
+                    slideshower_recursion();
+                });
+            }else{
+                slideshower_recursion();
+            }
+        });
+    }
+
+
 });
 </script>
