@@ -36,47 +36,48 @@
 
 </style>
 <script>
-$(function(){
-    function get_image_url(callback){
-        $.ajax({
-            type: 'GET',
-            url: '{{ context.references.random_image[0].address }}',
-            success: function(res){
-                callback(res);
-            },
-            error: function(err){
-                console.log(err);
-                callback(null;)
-            }
-        });
-    }
+function get_image_url(callback){
+    $.ajax({
+        type: 'GET',
+        url: '{{ context.references.random_image[0].address }}',
+        success: function(res){
+            callback(res);
+        },
+        error: function(err){
+            console.log(err);
+            callback(null;)
+        }
+    });
+}
 
-    function set_image(url, callback){
-        $('#slideshower .buttom')[0].src = url;
-        transition(callback);
-    }
+function set_image(url, callback){
+    $('#slideshower .buttom')[0].src = url;
+    transition(callback);
+}
 
-    function transition(callback){
-        setTimeout(function(){
-            var buttom = $('#slideshower .buttom')
-            var top = $('#slideshower .top');
-            buttom.attr('class', 'top');
-            top.attr('class', 'buttom');
-            setTimeout(callback, 10000);
-        },3000);
-    }
+function transition(callback){
+    setTimeout(function(){
+        var buttom = $('#slideshower .buttom')
+        var top = $('#slideshower .top');
+        buttom.attr('class', 'top');
+        top.attr('class', 'buttom');
+        setTimeout(callback, 10000);
+    },3000);
+}
 
-    function slideshower_recursion(){
-        get_image_url(function(url){
-            if(url != null){
-                set_image(url, function(){
-                    slideshower_recursion();
-                });
-            }else{
+function slideshower_recursion(){
+    get_image_url(function(url){
+        if(url != null){
+            set_image(url, function(){
                 slideshower_recursion();
-            }
-        });
-    }
+            });
+        }else{
+            slideshower_recursion();
+        }
+    });
+}
+
+$(function(){
 
     slideshower_recursion();
 
