@@ -17,7 +17,7 @@
     min-height: 300px;
     position:absolute;
     left:0;
-    /*-webkit-transition: opacity 6s ease-in;*/
+    -webkit-transition: opacity 6s ease-in;
     /*-webkit-transition: opacity 2s ease-in-out;
     -moz-transition: opacity 2s ease-in-out;
     -o-transition: opacity 2s ease-in-out;
@@ -63,9 +63,11 @@ function transition(callback){
         top.attr('class', 'buttom');
         setTimeout(function(){
             $('#slideshower .buttom')[0].src = "";
-            callback()
-        }, 3000); // transition time
-    },1000); // load image time
+            setTimeout(function(){
+                callback()
+            }, 10000);
+        }, 7000); // transition time
+    },3000); // load image time
 }
 
 function slideshower_recursion(){
@@ -81,9 +83,6 @@ function slideshower_recursion(){
 }
 
 $(function(){
-
     slideshower_recursion();
-
-
 });
 </script>
