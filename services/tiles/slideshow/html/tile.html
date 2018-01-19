@@ -37,6 +37,8 @@
 </style>
 <script>
 var waitTime = 15000;
+var transitionTime = 8000;
+var loadTime = 5000;
 function get_image_url(callback){
     $.ajax({
         type: 'GET',
@@ -67,8 +69,8 @@ function transition(callback){
             setTimeout(function(){
                 callback()
             }, waitTime);
-        }, 8000); // transition time
-    },5000); // load image time
+        }, transitionTime); // transition time
+    },loadTime); // load image time
 }
 
 function slideshower_recursion(){
