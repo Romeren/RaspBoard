@@ -17,7 +17,7 @@
     min-height: 300px;
     position:absolute;
     left:0;
-    -webkit-transition: opacity 4s ease-in-out;
+    -webkit-transition: opacity 10s ease-in-out;
     /*-webkit-transition: opacity 2s ease-in-out;
     -moz-transition: opacity 2s ease-in-out;
     -o-transition: opacity 2s ease-in-out;
@@ -52,12 +52,12 @@ $(function(){
             success: function(res){
                 $('#slideshower .buttom')[0].src = res;
                 $('#debug').html(res);
-                setTimeout(function(){
+                // setTimeout(function(){
                     var buttom = $('#slideshower .buttom')
                     var top = $('#slideshower .top');
                     buttom.attr('class', 'top');
                     top.attr('class', 'buttom');
-                },3000);
+                // },3000);
             },
             error: function(err){
                 console.log(err);
