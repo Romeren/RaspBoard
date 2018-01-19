@@ -36,6 +36,7 @@
 
 </style>
 <script>
+var waitTime = 15000;
 function get_image_url(callback){
     $.ajax({
         type: 'GET',
@@ -65,8 +66,8 @@ function transition(callback){
             $('#slideshower .buttom')[0].src = "";
             setTimeout(function(){
                 callback()
-            }, 10000);
-        }, 10000); // transition time
+            }, waitTime);
+        }, 8000); // transition time
     },5000); // load image time
 }
 
