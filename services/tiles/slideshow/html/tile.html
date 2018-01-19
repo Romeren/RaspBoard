@@ -13,8 +13,6 @@
 #slideshower img {
     max-width: 100%;
     max-height: 100%;
-    min-width: 300px;
-    min-height: 300px;
     position:absolute;
     left:0;
     top: 0%;
@@ -31,23 +29,22 @@
     height: 100%;
     z-index: 1;
     opacity: 1;
-    /*-webkit-transform: scale(1) translate(0, 0);*/
 }
 
 #slideshower img.buttom {
     z-index: 0;
     opacity: 1;
-    width: 10%;
-    height: 10%;
-    top: 25%;
+    width: 0px;
+    height: 0px;
+    top: 50%;
 }
 
 #slideshower img.left {
-    left: -120%;
+    left: 0%;
     /*-webkit-transform: translate(-100%, 0);*/
 }
 #slideshower img.right {
-    left: 120%;
+    left: 100%;
     /*-webkit-transform: translate(100%, 0);*/
 }
 
@@ -74,8 +71,6 @@ function get_image_url(callback){
 function set_image(url, callback){
     var btm = $('#slideshower .buttom');
     btm[0].src = url;
-    btm.attr('class', 'buttom right');
-
     transition(callback);
 }
 
@@ -86,7 +81,9 @@ function transition(callback){
         buttom.attr('class', 'top');
         top.attr('class', 'buttom left');
         setTimeout(function(){
-            $('#slideshower .buttom')[0].src = "";
+            var btm = $('#slideshower .buttom');
+            btm[0].src = "";
+            btm.attr('class', 'buttom right');
             setTimeout(function(){
                 callback()
             }, waitTime);
