@@ -64,8 +64,8 @@ function transition(callback){
         setTimeout(function(){
             $('#slideshower .buttom')[0].src = "";
             callback()
-        }, 5000);
-    },3000);
+        }, 3000); // transition time
+    },1000); // load image time
 }
 
 function slideshower_recursion(){
