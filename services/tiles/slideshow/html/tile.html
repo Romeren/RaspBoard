@@ -1,7 +1,7 @@
 <div class="item card white-text" style="height: 100%">
     <div id="slideshower">
-       <img class="top" src="" alt="Image">
-       <img class="buttom right" src="" alt="Image">
+       <div class="top"></div>
+       <div class="buttom right"></div>
    </div>
 </div>
 
@@ -10,7 +10,7 @@
     height: 100%;
 }
 
-#slideshower img {
+#slideshower div {
     max-width: 100%;
     max-height: 100%;
     position:absolute;
@@ -24,14 +24,14 @@
     transition: opacity 2s ease-in-out*/
 }
 
-#slideshower img.top{
+#slideshower div.top{
     width: 100%;
     height: 100%;
     z-index: 1;
     opacity: 1;
 }
 
-#slideshower img.buttom {
+#slideshower div.buttom {
     z-index: 0;
     opacity: 1;
     width: 0px;
@@ -39,11 +39,11 @@
     top: 50%;
 }
 
-#slideshower img.left {
+#slideshower div.left {
     left: -5%;
     /*-webkit-transform: translate(-100%, 0);*/
 }
-#slideshower img.right {
+#slideshower div.right {
     left: 100%;
     /*-webkit-transform: translate(100%, 0);*/
 }
@@ -70,7 +70,8 @@ function get_image_url(callback){
 
 function set_image(url, callback){
     var btm = $('#slideshower .buttom');
-    btm[0].src = url;
+    // btm[0].src = url;
+    btm.css('background-image', 'url("' + url + '")');
     transition(callback);
 }
 
@@ -82,7 +83,8 @@ function transition(callback){
         top.attr('class', 'buttom left');
         setTimeout(function(){
             var btm = $('#slideshower .buttom');
-            btm[0].src = "";
+            // btm[0].src = "";
+            btm.css("background-image",'None');
             btm.attr('class', 'buttom right');
             setTimeout(function(){
                 callback()
