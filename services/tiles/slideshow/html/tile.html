@@ -1,13 +1,11 @@
-<div id="slideshower">
-       <div class="top"></div>
-       <div class="buttom right"></div>
-</div>
+<div class="top"></div>
+<div class="buttom right"></div>
 <style type="text/css">
 #slideshow {
     height: 50%;
 }
 
-#slideshower div {
+#slideshow div {
     max-width: 100%;
     max-height: 100%;
     position:absolute;
@@ -23,7 +21,7 @@
     transition: opacity 2s ease-in-out*/
 }
 
-#slideshower div.top{
+#slideshow div.top{
     max-width: 100%;
     max-height: 100%;
     width: 100%;
@@ -32,7 +30,7 @@
     opacity: 1;
 }
 
-#slideshower div.buttom {
+#slideshow div.buttom {
     z-index: 0;
     opacity: 1;
     width: 0px;
@@ -40,11 +38,11 @@
     top: 50%;
 }
 
-#slideshower div.left {
+#slideshow div.left {
     left: -5%;
     /*-webkit-transform: translate(-100%, 0);*/
 }
-#slideshower div.right {
+#slideshow div.right {
     left: 100%;
     /*-webkit-transform: translate(100%, 0);*/
 }
@@ -70,7 +68,7 @@ function get_image_url(callback){
 }
 
 function set_image(url, callback){
-    var btm = $('#slideshower .buttom');
+    var btm = $('#slideshow .buttom');
     // btm[0].src = url;
     btm.css('background-image', 'url("' + url + '")');
     transition(callback);
@@ -78,12 +76,12 @@ function set_image(url, callback){
 
 function transition(callback){
     setTimeout(function(){
-        var buttom = $('#slideshower .buttom');
-        var top = $('#slideshower .top');
+        var buttom = $('#slideshow .buttom');
+        var top = $('#slideshow .top');
         buttom.attr('class', 'top');
         top.attr('class', 'buttom left');
         setTimeout(function(){
-            var btm = $('#slideshower .buttom');
+            var btm = $('#slideshow .buttom');
             // btm[0].src = "";
             btm.css("background-image",'None');
             btm.attr('class', 'buttom right');
@@ -94,19 +92,19 @@ function transition(callback){
     },loadTime); // load image time
 }
 
-function slideshower_recursion(){
+function slideshow_recursion(){
     get_image_url(function(url){
         if(url != null){
             set_image(url, function(){
-                slideshower_recursion();
+                slideshow_recursion();
             });
         }else{
-            setTimeout(slideshower_recursion(),3000);
+            setTimeout(slideshow_recursion(),3000);
         }
     });
 }
 
 $(function(){
-    slideshower_recursion();
+    slideshow_recursion();
 });
 </script>
