@@ -8,7 +8,7 @@ window.onload = function() {
 
       castReceiverManager.onReady = function(event) {
         window.castReceiverManager.setApplicationState('Reciever ready...');
-    };
+      };
       // messages on a custom namespace
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
