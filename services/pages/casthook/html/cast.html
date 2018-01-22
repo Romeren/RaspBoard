@@ -14,11 +14,15 @@ window.onload = function() {
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
       var domtest = $('#test')[0];
-      // window.meadiaManager = new cast.receiver.MediaManager(domtest);
-      //
-      // window.meadiaManager.onPause = function(e){
-      //       $('#test').text(e.data);
-      // }
+      var player = {
+          play: function(){
+              console.log('PLAY')
+          },
+          pause: function(){
+              console.log('PAUSE')
+          }
+      }
+      window.meadiaManager = new cast.receiver.MediaManager(player);
 
 
       window.messageBus.onMessage = function(e) {
