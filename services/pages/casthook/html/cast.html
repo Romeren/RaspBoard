@@ -14,7 +14,7 @@ window.onload = function() {
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
       var domtest = $('#test')[0];
-      window.meadiaManager = new MediaManager(domtest);
+      window.meadiaManager = new cast.receiver.MediaManager(domtest);
 
       window.meadiaManager.onPause = function(e){
             $('#test').text(e.data);
