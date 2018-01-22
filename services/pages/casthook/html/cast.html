@@ -13,7 +13,6 @@ window.onload = function() {
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
-      var domtest = $('#test')[0];
       var player = {
           play: function(){
               console.log('PLAY')
@@ -22,7 +21,8 @@ window.onload = function() {
               console.log('PAUSE')
           }
       }
-      window.meadiaManager = new cast.receiver.MediaManager(player);
+      window.player = player;
+      // window.meadiaManager = new cast.receiver.MediaManager(player);
 
 
       window.messageBus.onMessage = function(e) {
