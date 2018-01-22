@@ -1,20 +1,9 @@
 <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
 
-<h1 id="test" style="color: white; font-size: 60px;">This is a test</h1>
-
 <script>
 window.onload = function() {
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-      // window.castReceiverManager.La =function(a,b){
-      //     if(0!=a.lastIndexOf("urn:x-cast:",0))throw Error("Invalid namespace prefix");
-      //     if(!this.u[a]){
-      //         if(this.Jc)throw Error("New namespaces can not be requested after start has been called");
-      //         this.u[a]=new N(a,this.ba,Wa(this.Y),b);
-      //         Kb(this,wa(Lb,this.u[a]))
-      //     }
-      //     if(b&&this.u[a].ua!=b)throw Error("Invalid messageType for the namespace");
-      //     return this.u[a]
-      // }
+
       castReceiverManager.onReady = function(event) {
         window.castReceiverManager.setApplicationState('Reciever ready...');
       };
@@ -23,22 +12,15 @@ window.onload = function() {
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
       window.messageBus.onMessage = function(e) {
-        // var msg = JSON.parse(e.data);
-        $('#test').text(e.data);
+        var msg = JSON.parse(e.data);
 
-        // if(msg.hasOwnProperty('url')){
-            // window.location = msg.url;
-        // }
-
-
+        if(msg.hasOwnProperty('url')){
+            window.location = msg.url;
+        }
         //document.getElementById('test').innerHTML = e.data;
         //window.messageBus.send(e.senderId, 'ok')
-      };
+    };
       // initialize CastReceiverManager
-
-      var nss = 'urn:x-cast:com.google.cast.cac';
-      window.nss = window.castReceiverManager.getCastMessageBus(nss);
-
       window.castReceiverManager.start({statusText: 'Reciever starting...'});
 };
 </script>
