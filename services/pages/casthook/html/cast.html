@@ -12,6 +12,15 @@ window.onload = function() {
       // messages on a custom namespace
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
+
+      var domtest = $('#test')[0];
+      window.meadiaManager = new MediaManager(domtest);
+
+      window.meadiaManager.onPause = function(e){
+            $('#test').text(e.data);
+      }
+
+
       window.messageBus.onMessage = function(e) {
         // var msg = JSON.parse(e.data);
         $('#test').text(e.data);
