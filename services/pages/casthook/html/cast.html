@@ -14,15 +14,69 @@ window.onload = function() {
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
       var player = {
-          play: function(){
-              console.log('PLAY')
-          },
-          pause: function(){
-              console.log('PAUSE')
-          }
-      }
-      // window.player = player;
-      // window.meadiaManager = new cast.receiver.MediaManager(player);
+            mState:null,
+            editTracksInfo: function(data){
+                console.log('editTracksInfo'+data);
+            },
+            getDurationSec: function(){
+                console.log('getDurationSec');
+                return 120;
+            },
+            getState: function(){
+                var state =  'PLAYING';
+                console.log('getState '+state);
+                return state;
+            },
+            getVolume: function(){
+                var volume = new cast.receiver.media.Volume();
+                console.log('getVolume '+volume);
+                return volume;
+            },
+            load: function(contentId, autoplay, opt_time, opt_tracksInfo, opt_onlyLoadTracks){
+                console.log('load '+contentId+' autoplay: '+autoplay);
+            },
+            pause: function(){
+                console.log('pause');
+            },
+            play: function(){
+                console.log('play');
+            },
+            mEndedCallback:null,
+            registerEndedCallback: function(endedCallback){
+                console.log('registerEndedCallback(endedCallback)');
+            },
+            mErrorCallback:null,
+            registerErrorCallback: function(errorCallback){
+                console.log('registerErrorCallback(errorCallback)');
+            },
+            mLoadCallback:null,
+            registerLoadCallback: function(loadCallback){
+                console.log('registerLoadCallback(loadCallback)');
+            },
+            reset: function(){
+                console.log('reset');
+            },
+            seek: function(){
+                console.log('seek');
+            },
+            setVolume: function(volume){
+                console.log('setVolume '+volume);
+            },
+            unregisterEndedCallback: function(){
+                console.log('unregisterEndedCallback');
+            },
+            unregisterErrorCallback: function(){
+                console.log('unregisterErrorCallback');
+            },
+            unregisterLoadCallback: function(){
+                console.log('unregisterLoadCallback');
+            },
+            init: function(){
+                console.log('INIT');
+            }
+        }
+      window.player = playser;
+      window.meadiaManager = new cast.receiver.MediaManager(player);
 
 
       window.messageBus.onMessage = function(e) {
