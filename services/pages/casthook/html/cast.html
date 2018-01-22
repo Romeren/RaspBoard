@@ -22,19 +22,11 @@ window.onload = function() {
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
-      var nss = ['urn:x-cast:com.google.cast.media',
-                'urn:x-cast:com.google.cast.broadcast',
-                'urn:x-cast:com.google.cast.debugoverlayer'
-                // 'urn:x-cast:com.google.cast.inject'
-                // 'urn:x-cast:com.google.cast.system'
-            ];
       window.busses = [];
-      for(var i = 0; i < nss.length; i++){
-          console.log(nss[i]);
-            window.busses.push(window.castReceiverManager.getCastMessageBus(nss[i]));
-            window.busses.onMessage = function(e){
-                console.log(e);
-            }
+      for( x in window.castReceiverManager.u){
+          window.castReceiverManager.u[x].onMessage = function(e){
+              console.log(e)
+          }
       }
 
 
