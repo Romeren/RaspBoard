@@ -1,5 +1,5 @@
 <div class="top"></div>
-<div class="buttom right"></div>
+<div class="buttom up"></div>
 <style type="text/css">
 
 #slideshow div {
@@ -36,6 +36,14 @@
     left: 100%;
 }
 
+#slideshow div.up {
+    top: -100%
+}
+
+#slideshow div.down {
+    top: 100%
+}
+
 
 </style>
 <script>
@@ -68,12 +76,12 @@ function transition(callback){
         var buttom = $('#slideshow .buttom');
         var top = $('#slideshow .top');
         buttom.attr('class', 'top');
-        top.attr('class', 'buttom left');
+        top.attr('class', 'buttom down');
         setTimeout(function(){
             var btm = $('#slideshow .buttom');
             // btm[0].src = "";
             btm.css("background-image",'None');
-            btm.attr('class', 'buttom right');
+            btm.attr('class', 'buttom up');
             setTimeout(function(){
                 callback()
             }, waitTime);
