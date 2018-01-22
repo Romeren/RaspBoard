@@ -13,7 +13,22 @@ window.onload = function() {
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
-      var player = {
+      var nss = ['urn:x-cast:com.google.cast.media',
+                'urn:x-cast:com.google.cast.broadcast',
+                'urn:x-cast:com.google.cast.debugoverlayer',
+                'urn:x-cast:com.google.cast.inject',
+                'urn:x-cast:com.google.cast.system'];
+      window.busses = [];
+      for(var i = 0; i < nss.length; i++){
+            window.busses.push(window.castReceiverManager.getCastMessageBus(nss[i]));
+            window.busses.onMessage = function(e){
+                console.log(e);
+            }
+      }
+
+
+
+      // var player = {
             getSecondsEpoch:  function(){
                 return new Date().getTime()/1000;
             },
@@ -91,8 +106,8 @@ window.onload = function() {
                 console.log('INIT');
             }
         }
-      window.player = player;
-      window.meadiaManager = new cast.receiver.MediaManager(player);
+      // window.player = player;
+      // window.meadiaManager = new cast.receiver.MediaManager(player);
 
 
       window.messageBus.onMessage = function(e) {
