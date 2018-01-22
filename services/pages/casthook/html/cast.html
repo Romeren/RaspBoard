@@ -14,6 +14,22 @@ window.onload = function() {
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
 
       var player = {
+            getSecondsEpoch:  function(){
+                return new Date().getTime()/1000;
+            },
+            startTime: 0,
+            getRelativeTime: function(){
+                return this.getSecondsEpoch() - this.startTime;
+            },
+            getCurrentTimeSec: function(){
+                var relativeTime = this.getRelativeTime();
+                var currentTime = 0;
+                if(relativeTime > 3){
+                    currentTime = relativeTime - 3;
+                }
+                console.log('getCurrentTimeSec '+currentTime);
+                return currentTime;
+            },
             mState:null,
             editTracksInfo: function(data){
                 console.log('editTracksInfo'+data);
