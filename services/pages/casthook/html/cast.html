@@ -6,7 +6,6 @@
 window.onload = function() {
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
       window.castReceiverManager.La =function(a,b){
-      // if("urn:x-cast:com.google.cast.system"==a)throw Error("Protected namespace");
           if(0!=a.lastIndexOf("urn:x-cast:",0))throw Error("Invalid namespace prefix");
           if(!this.u[a]){
               if(this.Jc)throw Error("New namespaces can not be requested after start has been called");
