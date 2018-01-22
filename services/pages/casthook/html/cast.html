@@ -5,16 +5,16 @@
 <script>
 window.onload = function() {
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
-      window.castReceiverManager.La =function(a,b){
-          if(0!=a.lastIndexOf("urn:x-cast:",0))throw Error("Invalid namespace prefix");
-          if(!this.u[a]){
-              if(this.Jc)throw Error("New namespaces can not be requested after start has been called");
-              this.u[a]=new N(a,this.ba,Wa(this.Y),b);
-              Kb(this,wa(Lb,this.u[a]))
-          }
-          if(b&&this.u[a].ua!=b)throw Error("Invalid messageType for the namespace");
-          return this.u[a]
-      }
+      // window.castReceiverManager.La =function(a,b){
+      //     if(0!=a.lastIndexOf("urn:x-cast:",0))throw Error("Invalid namespace prefix");
+      //     if(!this.u[a]){
+      //         if(this.Jc)throw Error("New namespaces can not be requested after start has been called");
+      //         this.u[a]=new N(a,this.ba,Wa(this.Y),b);
+      //         Kb(this,wa(Lb,this.u[a]))
+      //     }
+      //     if(b&&this.u[a].ua!=b)throw Error("Invalid messageType for the namespace");
+      //     return this.u[a]
+      // }
       castReceiverManager.onReady = function(event) {
         window.castReceiverManager.setApplicationState('Reciever ready...');
       };
@@ -25,8 +25,9 @@ window.onload = function() {
       var nss = ['urn:x-cast:com.google.cast.media',
                 'urn:x-cast:com.google.cast.broadcast',
                 'urn:x-cast:com.google.cast.debugoverlayer',
-                'urn:x-cast:com.google.cast.inject',
-                'urn:x-cast:com.google.cast.system'];
+                'urn:x-cast:com.google.cast.inject'
+                // 'urn:x-cast:com.google.cast.system'
+            ];
       window.busses = [];
       for(var i = 0; i < nss.length; i++){
             window.busses.push(window.castReceiverManager.getCastMessageBus(nss[i]));
