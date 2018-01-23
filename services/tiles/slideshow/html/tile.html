@@ -52,7 +52,8 @@
 var waitTime = 120000;
 var transitionTime = 4000;
 var loadTime = 1500;
-var slideshow_command = null
+var slideshow_command = null;
+var waitTime_timeOut = null;
 function get_image_url(callback){
     $.ajax({
         type: 'GET',
@@ -88,7 +89,7 @@ function transition(callback){
             if(slideshow_command != null){
                 callback();
             }else{
-                setTimeout(function(){
+                waitTime_timeOut = setTimeout(function(){
                     callback()
                 }, waitTime);
             }
@@ -117,10 +118,12 @@ $(function(){
     document.addEventListener('KEY_FASTFORWARD',function(){
         // $('#test').text('KEY_FASTFORWARD');
         slideshow_command = {'cmd': 'next' };
+        clearTimeout(waitTime_timeOut);
     });
     document.addEventListener('KEY_REWIND',function(){
-        slideshow_command = {'cmd': 'previous' };
         // $('#test').text('KEY_REWIND');
+        slideshow_command = {'cmd': 'previous' };
+        clearTimeout(waitTime_timeOut);
     });
 });
 </script>
