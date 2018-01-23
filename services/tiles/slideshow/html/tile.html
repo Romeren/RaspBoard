@@ -49,9 +49,10 @@
 
 </style>
 <script>
-var waitTime = 60000;
-var transitionTime = 6000;
-var loadTime = 3000;
+var waitTime = 120000;
+var transitionTime = 5000;
+var loadTime = 2000;
+var slideshow_command = null
 function get_image_url(callback){
     $.ajax({
         type: 'GET',
@@ -84,9 +85,13 @@ function transition(callback){
             // btm[0].src = "";
             btm.css("background-image",'None');
             btm.attr('class', 'buttom right');
-            setTimeout(function(){
-                callback()
-            }, waitTime);
+            if(slideshow_command != null){
+                callback();
+            }else{
+                setTimeout(function(){
+                    callback()
+                }, waitTime);
+            }
         }, transitionTime); // transition time
     },loadTime); // load image time
 }
@@ -105,5 +110,14 @@ function slideshow_recursion(){
 
 $(function(){
     slideshow_recursion();
+
+    document.addEventListener('KEY_FASTFORWARD',function(){
+        // $('#test').text('KEY_FASTFORWARD');
+        slideshow_command = {'cmd': 'next' };
+    });
+    document.addEventListener('KEY_REWIND',function(){
+        slideshow_command = {'cmd': 'previous' };
+        // $('#test').text('KEY_REWIND');
+    });
 });
 </script>
