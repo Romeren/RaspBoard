@@ -1,4 +1,6 @@
 <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
+<iframe id="loaded-content">
+</iframe>
 
 <h1 id="test" style="color: white; font-size: 60px;">This is a test</h1>
 
@@ -18,10 +20,11 @@ window.onload = function() {
 
         if(msg.hasOwnProperty('url')){
             // window.location = msg.url;
-            $('#test').text(msg.url);
+            $('#loaded-content').attr('src'. msg.url);
         }
         if(msg.hasOwnProperty('pressed_key')){
-            $('#test').text(msg.pressed_key);
+            var event = new Event(msg.pressed_key);
+            document.dispatchEvent(event);
         }
         //document.getElementById('test').innerHTML = e.data;
         //window.messageBus.send(e.senderId, 'ok')
