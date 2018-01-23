@@ -1,6 +1,6 @@
 <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
-<iframe id="loaded-content">
-</iframe>
+<div id="loaded-content">
+</div>
 
 <h1 id="test" style="color: white; font-size: 60px;">This is a test</h1>
 
@@ -20,7 +20,7 @@ window.onload = function() {
 
         if(msg.hasOwnProperty('url')){
             // window.location = msg.url;
-            $('#loaded-content').attr('src'. msg.url);
+            $('#loaded-content').load(msg.url);
         }
         if(msg.hasOwnProperty('pressed_key')){
             var event = new Event(msg.pressed_key);
