@@ -50,8 +50,8 @@
 </style>
 <script>
 var waitTime = 120000;
-var transitionTime = 5000;
-var loadTime = 2000;
+var transitionTime = 4000;
+var loadTime = 1500;
 var slideshow_command = null
 function get_image_url(callback){
     $.ajax({
@@ -100,6 +100,9 @@ function slideshow_recursion(){
     get_image_url(function(url){
         if(url != null){
             set_image(url, function(){
+                if(slideshow_command != null){
+                    slideshow_command = null;
+                }
                 slideshow_recursion();
             });
         }else{
