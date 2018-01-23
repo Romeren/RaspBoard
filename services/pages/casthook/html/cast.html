@@ -1,5 +1,7 @@
 <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
 
+<h1 id="test" style="color: white; font-size: 60px;">This is a test</h1>
+
 <script>
 window.onload = function() {
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
@@ -15,7 +17,11 @@ window.onload = function() {
         var msg = JSON.parse(e.data);
 
         if(msg.hasOwnProperty('url')){
-            window.location = msg.url;
+            // window.location = msg.url;
+            $('#test').text(msg.url);
+        }
+        if(msg.hasOwnProperty('pressed_key')){
+            $('#test').text(msg.pressed_key);
         }
         //document.getElementById('test').innerHTML = e.data;
         //window.messageBus.send(e.senderId, 'ok')
