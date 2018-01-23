@@ -90,6 +90,7 @@ function transition(callback){
                 callback();
             }else{
                 waitTime_timeOut = setTimeout(function(){
+                    waitTime_timeOut = null;
                     callback()
                 }, waitTime);
             }
@@ -118,12 +119,18 @@ $(function(){
     document.addEventListener('KEY_FASTFORWARD',function(){
         // $('#test').text('KEY_FASTFORWARD');
         slideshow_command = {'cmd': 'next' };
-        clearTimeout(waitTime_timeOut);
+        if(waitTime_timeOut != null){
+            clearTimeout(waitTime_timeOut);
+            slideshow_recursion();
+        }
     });
     document.addEventListener('KEY_REWIND',function(){
         // $('#test').text('KEY_REWIND');
         slideshow_command = {'cmd': 'previous' };
-        clearTimeout(waitTime_timeOut);
+        if(waitTime_timeOut != null){
+            clearTimeout(waitTime_timeOut);
+            slideshow_recursion();
+        }
     });
 });
 </script>
