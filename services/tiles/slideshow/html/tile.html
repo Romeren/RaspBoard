@@ -158,9 +158,10 @@ class slider_controller {
             buttom.attr('class', 'top');
             top.attr('class', 'buttom out '+ toDir);
             setTimeout(()=>{
-                $('#slideshow .buttom.out').remove();
+                var toChange = !isNext ? 'next' : 'previous';
+                $('#slideshow .buttom.' + toChange).remove();
+                $('#slideshow .buttom.out').attr('class', 'buttom ' + toChange);
                 this.isIdling = true;
-                // var buffered = isNext ? 'next' : 'previous';
                 // var btm = $('#slideshow .buttom.out');
                 // top.css("background-image", 'url('+url+')');
                 // btm.attr('class', 'buttom ' + buffered);
