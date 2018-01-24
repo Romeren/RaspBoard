@@ -1,7 +1,7 @@
 <div class="top"></div>
-<div class="buttom right"></div>
+<div class="buttom next"></div>
+<div class="buttom previous"></div>
 <style type="text/css">
-
 #slideshow div {
     position:absolute;
     left:0;
@@ -36,6 +36,7 @@
 #slideshow div.left {
     left: -5%;
 }
+
 #slideshow div.right {
     left: 100%;
 }
@@ -49,8 +50,6 @@
     left: 50%;
     top: 105%;
 }
-
-
 </style>
 <script>
 var current_image = Math.floor(Math.random() * 1000);
@@ -60,6 +59,7 @@ var wait_time = 60000;
 
 class slider_controller {
     constructor(start_image, max_buffer_length, loadTime, transitionTime) {
+        this.isIdling = true;
         this.index = start_image;
         this.max_buffer_length = max_buffer_length;
 
@@ -70,14 +70,28 @@ class slider_controller {
         this.next = [];
         this.current = "";
 
+
         this.init_fill_buffer();
     }
 
     init_fill_buffer(){
-        this.get_image_url(this.index, (e)=>{this.current = e;});
+        this.get_image_url(this.index, (e)=>{
+            this.current = e;
+            $('#slideshow .top').css("background-image", 'url(' + e + ')');
+        });
         for(var i = 0; i < this.max_buffer_length; i++){
-            this.get_image_url(this.index - (i+1), (e)=>{this.previous.push(e);});
-            this.get_image_url(this.index + (i+1), (e)=>{this.next.push(e);});
+            this.get_image_url(this.index - (i+1), (e)=>{
+                this.previous.push(e);
+                if(this.previous.length == 1){
+                    $('#slideshow .buttom.previous').css("background-image", 'url('+e+')');
+                }
+            });
+            this.get_image_url(this.index + (i+1), (e)=>{
+                this.next.push(e);
+                if(this.next.length == 1){
+                    $('#slideshow .buttom.next').css("background-image", 'url('+e+')');
+                }
+            });
         }
     }
 
@@ -96,6 +110,7 @@ class slider_controller {
     }
 
     next_image(){
+        this.isIdling = false;
         // STEP FORWARD:
         this.index += 1;
         this.previous.splice(0,0, this.current);
@@ -103,7 +118,7 @@ class slider_controller {
         this.current = this.next.shift();
 
         // change picture:
-        this.change_image(this.current, 'right', 'left');
+        this.change_image(this.next[0], 'right', 'left', true);
 
         // load new image into buffer:
         var load_index = this.index + (this.max_buffer_length -1);
@@ -111,6 +126,7 @@ class slider_controller {
     }
 
     previous_image(){
+        this.isIdling = false;
         // STEP BACK:
         this.index -= 1;
         this.next.splice(0,0, this.current);
@@ -118,7 +134,7 @@ class slider_controller {
         this.current = this.previous.shift();
 
         // change picture:
-        this.change_image(this.current, 'left', 'right');
+        this.change_image(this.previous[0], 'left', 'right', false);
 
         // load new image into buffer:
         var load_index = this.index - (this.max_buffer_length -1);
@@ -126,28 +142,40 @@ class slider_controller {
 
     }
 
-    change_image(url, fromDir, toDir){
-        var btm = $('#slideshow .buttom');
+    change_image(url, fromDir, toDir, isNext){
+        var buffered = isNext ? 'next' : 'previous';
+        var btm = $('#slideshow .buttom.' + buffered);
         btm.attr('class', 'buttom ' + fromDir);
-        btm.css('background-image', 'url("' + url + '")');
+
+        var newNode = $('<div class="buttom ' + buffered + '"></div>')
+        newNode.css("background-image", 'url('+url+')');
+        $('#slideshow').append(newNode);
+        // btm.css('background-image', 'url("' + url + '")');
         setTimeout(()=>{
-            var buttom = $('#slideshow .buttom');
+            var buffered = isNext ? 'next' : 'previous';
+            var buttom = $('#slideshow .buttom.'+fromDir);
             var top = $('#slideshow .top');
             buttom.attr('class', 'top');
             top.attr('class', 'buttom out '+ toDir);
             setTimeout(()=>{
-                var btm = $('#slideshow .buttom');
-                btm.css("background-image",'None');
-                btm.attr('class', 'buttom');
+                $('#slideshow .buttom.out').remove();
+                this.isIdling = true;
+                // var buffered = isNext ? 'next' : 'previous';
+                // var btm = $('#slideshow .buttom.out');
+                // top.css("background-image", 'url('+url+')');
+                // btm.attr('class', 'buttom ' + buffered);
             },this.transitionTime);
         },this.loadTime);
+    }
+
+    isReady(){
+        return this.isReady;
     }
 }
 
 $(function(){
-    slideshow_controller = new slider_controller(0,3,4000, 3000);
+    slideshow_controller = new slider_controller(0,3,150, 3000);
 
-    slideshow_controller.next_image();
     rotation_interval = setInterval(function(){
         slideshow_controller.next_image();
     }, wait_time);
@@ -158,7 +186,9 @@ $(function(){
             clearInterval(rotation_interval);
             rotation_interval = null;
         }
-        slideshow_controller.next_image();
+        if(slideshow_controller.isReady()){
+            slideshow_controller.next_image();
+        }
     });
     document.addEventListener('KEY_REWIND',function(){
         // $('#test').text('KEY_REWIND');
@@ -166,11 +196,15 @@ $(function(){
             clearInterval(rotation_interval);
             rotation_interval = null;
         }
-        slideshow_controller.previous_image();
+        if(slideshow_controller.isReady){
+            slideshow_controller.previous_image();
+        }
     });
     document.addEventListener('KEY_PLAY', function(){
         if(rotation_interval == null){
-            slideshow_controller.next_image();
+            if(slideshow_controller.isReady()){
+                slideshow_controller.next_image();
+            }
             rotation_interval = setInterval(function(){
                 slideshow_controller.next_image();
             }, wait_time);
