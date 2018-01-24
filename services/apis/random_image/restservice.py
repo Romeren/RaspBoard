@@ -26,7 +26,7 @@ class Service(abstract_plugin):
                 image_id = None
 
         current_time = time.time()
-        if current_time - last_renewed_cach_at > (60 * 60):
+        if current_time - last_renewed_cach_at > (60 * 60 * 3):
             last_renewed_cach_at = current_time
             url_cache = []
             print('RENEWING CACHE..!')
