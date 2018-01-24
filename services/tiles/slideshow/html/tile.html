@@ -6,7 +6,6 @@
     position:absolute;
     left:0;
     top: 0%;
-    -webkit-transition: all 4s ease-in-out;
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -19,6 +18,11 @@
     height: 100%;
     z-index: 1;
     opacity: 1;
+    -webkit-transition: all 3s ease-in-out;
+}
+
+#slideshow div.out {
+    -webkit-transition: all 3s ease-in-out;
 }
 
 #slideshow div.buttom {
@@ -49,87 +53,132 @@
 
 </style>
 <script>
-var waitTime = 120000;
-var transitionTime = 4000;
-var loadTime = 1500;
-var slideshow_command = null;
-var waitTime_timeOut = null;
-function get_image_url(callback){
-    $.ajax({
-        type: 'GET',
-        url: '{{ context.references.random_image[0].address }}',
-        success: function(res){
-            callback(res);
-        },
-        error: function(err){
-            console.log(err);
-            callback(null);
+var current_image = Math.floor(Math.random() * 1000);
+var slideshow_controller = null;
+var rotation_interval = null;
+var wait_time = 60000;
+
+class slider_controller {
+    constructor(start_image, max_buffer_length, loadTime, transitionTime) {
+        this.index = start_image;
+        this.max_buffer_length = max_buffer_length;
+
+        this.loadTime = loadTime; // time to load image
+        this.transitionTime = transitionTime; // time to make image transition
+
+        this.previous = [];
+        this.next = [];
+        this.current = "";
+
+        this.init_fill_buffer();
+    }
+
+    init_fill_buffer(){
+        this.get_image_url(this.index, (e)=>{this.current = e;});
+        for(var i = 0; i < this.max_buffer_length; i++){
+            this.get_image_url(this.index - (i+1), (e)=>{this.previous.push(e);});
+            this.get_image_url(this.index + (i+1), (e)=>{this.next.push(e);});
         }
-    });
-}
+    }
 
-function set_image(url, callback){
-    var btm = $('#slideshow .buttom');
-    // btm[0].src = url;
-    btm.css('background-image', 'url("' + url + '")');
-    transition(callback);
-}
-
-function transition(callback){
-    setTimeout(function(){
-        var buttom = $('#slideshow .buttom');
-        var top = $('#slideshow .top');
-        buttom.attr('class', 'top');
-        top.attr('class', 'buttom left');
-        setTimeout(function(){
-            var btm = $('#slideshow .buttom');
-            // btm[0].src = "";
-            btm.css("background-image",'None');
-            btm.attr('class', 'buttom right');
-            if(slideshow_command != null){
-                callback();
-            }else{
-                waitTime_timeOut = setTimeout(function(){
-                    waitTime_timeOut = null;
-                    callback()
-                }, waitTime);
+    get_image_url(image_id, callback){
+        $.ajax({
+            type: 'GET',
+            url: '{{ context.references.random_image[0].address }}?image_id=' + image_id ,
+            success: function(res){
+                callback(res);
+            },
+            error: function(err){
+                console.log(err);
+                callback(null);
             }
-        }, transitionTime); // transition time
-    },loadTime); // load image time
-}
+        });
+    }
 
-function slideshow_recursion(){
-    get_image_url(function(url){
-        if(url != null){
-            set_image(url, function(){
-                if(slideshow_command != null){
-                    slideshow_command = null;
-                }
-                slideshow_recursion();
-            });
-        }else{
-            setTimeout(slideshow_recursion(),3000);
-        }
-    });
+    next_image(){
+        // STEP FORWARD:
+        this.index += 1;
+        this.previous.splice(0,0, this.current);
+        this.previous.pop();
+        this.current = this.next.shift();
+
+        // change picture:
+        this.change_image(this.current, 'right', 'left');
+
+        // load new image into buffer:
+        var load_index = this.index + (this.max_buffer_length -1);
+        this.get_image_url(load_index, (e)=>{this.next.push(e);});
+    }
+
+    previous_image(){
+        // STEP BACK:
+        this.index -= 1;
+        this.next.splice(0,0, this.current);
+        this.next.pop();
+        this.current = this.previous.shift();
+
+        // change picture:
+        this.change_image(this.current, 'left', 'right');
+
+        // load new image into buffer:
+        var load_index = this.index - (this.max_buffer_length -1);
+        this.get_image_url(load_index, (e)=>{this.previous.push(e);});
+
+    }
+
+    change_image(url, fromDir, toDir){
+        var btm = $('#slideshow .buttom');
+        btm.attr('class', 'buttom ' + fromDir);
+        btm.css('background-image', 'url("' + url + '")');
+        setTimeout(()=>{
+            var buttom = $('#slideshow .buttom');
+            var top = $('#slideshow .top');
+            buttom.attr('class', 'top');
+            top.attr('class', 'buttom out '+ toDir);
+            setTimeout(()=>{
+                var btm = $('#slideshow .buttom');
+                btm.css("background-image",'None');
+                btm.attr('class', 'buttom');
+            },this.transitionTime);
+        },this.loadTime);
+    }
 }
 
 $(function(){
-    slideshow_recursion();
+    slideshow_controller = new slider_controller(0,3,4000, 3000);
+
+    slideshow_controller.next_image();
+    rotation_interval = setInterval(function(){
+        slideshow_controller.next_image();
+    }, wait_time);
 
     document.addEventListener('KEY_FASTFORWARD',function(){
         // $('#test').text('KEY_FASTFORWARD');
-        slideshow_command = {'cmd': 'next' };
-        if(waitTime_timeOut != null){
-            clearTimeout(waitTime_timeOut);
-            slideshow_recursion();
+        if(rotation_interval != null){
+            clearInterval(rotation_interval);
+            rotation_interval = null;
         }
+        slideshow_controller.next_image();
     });
     document.addEventListener('KEY_REWIND',function(){
         // $('#test').text('KEY_REWIND');
-        slideshow_command = {'cmd': 'previous' };
-        if(waitTime_timeOut != null){
-            clearTimeout(waitTime_timeOut);
-            slideshow_recursion();
+        if(rotation_interval != null){
+            clearInterval(rotation_interval);
+            rotation_interval = null;
+        }
+        slideshow_controller.previous_image();
+    });
+    document.addEventListener('KEY_PLAY', function(){
+        if(rotation_interval == null){
+            slideshow_controller.next_image();
+            rotation_interval = setInterval(function(){
+                slideshow_controller.next_image();
+            }, wait_time);
+        }
+    });
+    document.addEventListener('KEY_PAUSE', function(){
+        if(rotation_interval != null){
+            clearInterval(rotation_interval);
         }
     });
 });
