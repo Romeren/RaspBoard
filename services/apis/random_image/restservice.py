@@ -26,14 +26,14 @@ class Service(abstract_plugin):
                 image_id = None
 
         current_time = time.time()
-        if current_time - last_renewed_cach_at > (60 * 10):
+        if current_time - last_renewed_cach_at > (60 * 60):
             last_renewed_cach_at = current_time
             url_cache = []
             print('RENEWING CACHE..!')
             dbx = dropbox.Dropbox('8ojZ64O1QOMAAAAAAAAgtze8RBvwA8iCgBupa5MWwmGblbABMbt7_N0g1qVolt3f')
             files = dbx.files_list_folder('')
             no_of_files = len(files.entries)
-            for i in range(0, 10):
+            for i in range(0, no_of_files):
                 path = files.entries[i].path_lower
                 print(path)
                 link = dbx.files_get_temporary_link(path).link.decode('utf-8')
