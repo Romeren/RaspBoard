@@ -1,30 +1,30 @@
 <script src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js"></script>
-
-<h1 id="test" style="color: white; font-size: 60px;"></h1>
+<div id="loaded-content">
+</div>
 
 <script>
 window.onload = function() {
       window.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
 
       castReceiverManager.onReady = function(event) {
-          setTimeout(function(){
-            window.castReceiverManager.setApplicationState('Reciever ready...');
-        }, 1000);
-    };
+        window.castReceiverManager.setApplicationState('Reciever ready...');
+      };
       // messages on a custom namespace
       var ns = 'urn:x-cast:dashboard.com.framework';
       window.messageBus = window.castReceiverManager.getCastMessageBus(ns);
+
       window.messageBus.onMessage = function(e) {
         var msg = JSON.parse(e.data);
 
         if(msg.hasOwnProperty('url')){
-            window.location = msg.url;
+            // window.location = msg.url;
+            $('#loaded-content').load(msg.url);
         }
-
-
-        //document.getElementById('test').innerHTML = e.data;
-        //window.messageBus.send(e.senderId, 'ok')
-      };
+        if(msg.hasOwnProperty('pressed_key')){
+            var event = new Event(msg.pressed_key);
+            document.dispatchEvent(event);
+        }
+    };
       // initialize CastReceiverManager
       window.castReceiverManager.start({statusText: 'Reciever starting...'});
 };

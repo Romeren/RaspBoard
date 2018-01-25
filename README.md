@@ -3,15 +3,15 @@ Dashboard but on a Raspberry
 
 Microservice architecture for luanching small Rest services.
 
-Built using:
+# Built using:
     *   Python
     *   Tornado Web
     *   ZeroMq
 
-Built to run on:
+# Built to run on:
     * Raspberry Pi
 
-Contains:
+# Contains:
     Framework:
         * Component_broker
         * Abstract Microservice template
@@ -19,4 +19,9 @@ Contains:
     Pages:
         * A Chrome cast application, that can be luanched on a chromecast to browse websites.
         * A tile with a digital clock
-        * More comming soon
+        * More comming soon!
+
+
+No, thank you! ;)
+
+Good luck have fun!

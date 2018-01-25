@@ -3,12 +3,12 @@
 handles subscriping to server and sending heartbeats.
 """
 
-from service_framework.events.event_module import EventDispatcher as dispatcher
-from service_framework.events.event_module import named_events as event_map
+from RaspBoard.service_framework.events.event_module import EventDispatcher as dispatcher
+from RaspBoard.service_framework.events.event_module import named_events as event_map
 
-from service_framework.service_container.event_subscriber import Event_Subscriber
-from service_framework.service_container.service_register import service_register
-from service_framework.service_container.Container import Container
+from RaspBoard.service_framework.service_container.event_subscriber import Event_Subscriber
+from RaspBoard.service_framework.service_container.service_register import service_register
+from RaspBoard.service_framework.service_container.Container import Container
 
 import atexit
 import signal

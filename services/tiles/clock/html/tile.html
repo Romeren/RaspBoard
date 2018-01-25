@@ -1,5 +1,5 @@
-<div class="item card green white-text"">
-      <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
+<div class="item card white-text">
+      <div class="flip-container green" ontouchstart="this.classList.toggle('hover');">
         <div class="flipper">
           <div class="front">
             <div id="time-widget" class="outer-square setter time">
@@ -203,7 +203,7 @@ $( function() {
         });
 
     var timerID = setInterval(updateTime, 1000);
-    
+
     function updateTime() {
       var d = new Date(),
       days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -323,7 +323,7 @@ $( function() {
           $('#' + this.divId).html(html);
     };
 
-  var c = new Cal("divCal");            
+  var c = new Cal("divCal");
   c.showcurr();
 
   $('#btnNext').click(function() {

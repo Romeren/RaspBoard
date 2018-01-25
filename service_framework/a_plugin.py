@@ -11,7 +11,13 @@ from tornado import template
 from tornado import web
 from tornado import websocket
 from urllib import urlencode
+
 cl = []
+
+
+class placeholder(object):
+    def __str__(self):
+        return self.__dict__
 
 
 class BaseHandler(object):
@@ -26,43 +32,50 @@ class BaseHandler(object):
     def dump_message(self, message):
         try:
             return json.dumps(message)
-        except Exception, e:
+        except Exception as e:
+            print(e)
             print('JSON COULD NOT BE PARSED')
             return None
 
     def load_message(self, message):
         try:
             return json.loads(message)
-        except Exception, e:
+        except Exception as e:
+            print(e)
             print("MESSAGE COULD NOT BE PARSED!")
             return None
 
     def set_dependencies(self, context, config):
-        context["references"] = {}
+        setattr(context, "references", placeholder())
+
         # add reference to self:
         selfRef = next(self.module.get_services(config['service_type'] + "/" + config['service_category'] + "/" + config['service_name']))  # NOQA
 
         selfRef = self.make_dependency_ref(selfRef)
-        context['references']['self'] = selfRef
-        context['references'][config['service_name']] = selfRef
+        setattr(context.references, 'self', selfRef)
+        setattr(context.references, config['service_name'], selfRef)
 
         jsRef = next(self.module.get_services('rest/misc/javascripts'), None)
-        context['references']['javascript'] = [self.make_dependency_ref(jsRef)]
+        setattr(context.references,
+                'javascript',
+                [self.make_dependency_ref(jsRef)])
+
         # add reference to all dependencies:
         if("dependencies" not in config):
             return context
         for dep in config['dependencies']:
-            context['references'][dep["name"]] = []
-
             services = self.module.get_services(dep["service"])
             service = next(services, None)
+            array_service = []
             while(service):
-                context['references'][dep["name"]].append(self.make_dependency_ref(service))  # NOQA
+                array_service.append(self.make_dependency_ref(service))
                 service = next(services, None)
 
             # if no service was found add a enpty reference!
-            if(len(context['references'][dep["name"]]) == 0):
-                context['references'][dep["name"]].append(self.make_dependency_ref(None))  # NOQA
+            if(len(array_service) == 0):
+                array_service.append(self.make_dependency_ref(None))  # NOQA
+
+            setattr(context.references, dep["name"], array_service)
 
         return context
 
@@ -77,13 +90,13 @@ class BaseHandler(object):
                           service_name,
                           addr,
                           error=False):
-        return {
-            "name": service_name.replace("_", " "),
-            "service_name_js": service_name.replace("/", "\\\/"),
-            "service_name": service_name,
-            "address": addr,
-            "hasError": error
-            }
+        ref = placeholder()
+        setattr(ref, "name", service_name.replace("_", " "))
+        setattr(ref, "service_name_js", service_name.replace("/", "\\\/"))
+        setattr(ref, "service_name", service_name)
+        setattr(ref, "address", addr)
+        setattr(ref, "hasError", error)
+        return ref
 
     def get_service_address_from_request(self, request):
         address = None
@@ -161,9 +174,8 @@ class SocketHandler(websocket.WebSocketHandler, BaseHandler):
         print("Connection opened!")
         # if self not in cl:
         #     cl.append(self)
-
-            # TODO(SECURITY): handle authentication and premissions
-            # self.user = self.get_current_user()
+        # TODO(SECURITY): handle authentication and premissions
+        # self.user = self.get_current_user()
         if("on_open" in self.messages_for_listening):
             message = {"event": "on_open", "message": "connection opened"}
             self.messages_for_listening["on_open"](message)
@@ -228,22 +240,21 @@ class RestHandler(web.RequestHandler, BaseHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
     def get_basic_context(self, config):
-        context = {}
+        context = placeholder()
 
         # check the origin of the request
         origin = self.request.headers.get('Origin')
         if origin is None:
-            context["origin"] = 'DIRECT'
+            setattr(context, "origin", 'DIRECT')
         else:
-            context["origin"] = 'CROSS'
+            setattr(context, "origin", 'CROSS')
 
         # check if request is lazy load
         isLazyLoad = self.request.headers.get('ajax-lazy-load-call')
         if(isLazyLoad is not None and isLazyLoad):
-            context["isLazyLoad"] = isLazyLoad
+            setattr(context, "isLazyLoad", isLazyLoad)
         else:
-            context["isLazyLoad"] = False
-
+            setattr(context, "isLazyLoad", False)
         # set user information:
         context = self.__set_user_info(context)
 
@@ -254,11 +265,11 @@ class RestHandler(web.RequestHandler, BaseHandler):
 
     def __set_user_info(self, context):
         user = self.get_current_user()
-        context["user"] = user
+        setattr(context, "user", user)
         if user:
-            context["loggedin"] = True
+            setattr(context, "loggedin", True)
         else:
-            context["loggedin"] = False
+            setattr(context, "loggedin", False)
         return context
 
     def render_response(self, template_name, **kwargs):
@@ -290,12 +301,10 @@ class RestHandler(web.RequestHandler, BaseHandler):
         buttom = '</body>\n</html>'
         # print(kwargs)
         context = kwargs['context']
-        if("isLazyLoad" in context):
-            # print("found is lazyload " + str(context['isLazyLoad']))
-            if(context['isLazyLoad']):
-                top = ''
-                buttom = ''
-                # print("ISLAZYLOAD TOP AND BUTTOM REMOVED!!")
+        if(context.isLazyLoad):
+            top = ''
+            buttom = ''
+            # print("ISLAZYLOAD TOP AND BUTTOM REMOVED!!")
 
         # build template:
         t = None

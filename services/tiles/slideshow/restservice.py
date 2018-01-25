@@ -11,10 +11,11 @@ class Service(abstract_plugin):
         context = self.get_basic_context(config)
         self.render_response(html_path, context=context)
 
-config = {"service_name": "clock",
+config = {"service_name": "slideshow",
           "handler": Service,
           "service_type": "rest",
           "service_category": "tile",
           "dependencies": [
+              {'name': 'random_image', 'service': "rest/api/random_image"},
           ]
           }

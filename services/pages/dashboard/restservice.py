@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-  # NOQA
-from service_framework.a_plugin import RestHandler as abstract_plugin  # NOQA
+from RaspBoard.service_framework.a_plugin import RestHandler as abstract_plugin  # NOQA
 
 
 class Service(abstract_plugin):
@@ -16,6 +16,6 @@ config = {"service_name": "home",
           "service_type": "rest",
           "service_category": "page",
           "dependencies": [
-              {'name': 'tiles', 'service': "rest/tile/*"},
+              {'name': 'tiles', 'service': "rest/tile/slideshow"},
           ]
           }
