@@ -1,22 +1,20 @@
+import fnmatch
+import re
+
 
 class service_register(object):
-    """docstring for service_register"""
-    def __init__(self, arg):
-        super(service_register, self).__init__()
-        self.plugins = None
-    
+    def __init__(self, module):
+        self.remote_services = {}
+        self.local_services = {}
+        self.module = module
 
-    def get_services(self, topic):
+    def get_services(self, topic, allowLocal=True, allowRemote=True):
         # request plugin at broker:
         topic += "/*"
-        clients = util.get_matching(self.__get_services(), topic)
+        clients = self.get_matching(self.__get_services(), topic)
 
-        elm = []
         for key in clients:
             yield self.__get_services()[key]
-            #elm.append(self.__get_services()[key])
-
-        #return elm
 
     def get_service(self, topic):
         topic += "/*"
@@ -28,8 +26,13 @@ class service_register(object):
 
         return elm
 
-    def add_service(self, topic, service):
-        self.__get_services()[topic] = service
+    def add_local_service(self, config):
+        config['host_address'] = self.module.ip_address
+        config['port'] = self.module.port
+        topic = self.build_topic(config)
+
+        self.local_services[topic] = config
+        self.module.dispatch_event('SERVICE_ADDED_LOCALLY', (10, topic))
 
     def remove_service(self, topic):
         self.__get_services().pop(topic, None)
@@ -37,28 +40,46 @@ class service_register(object):
     # --------------------------------------------------------
     # Utiliy functions
     # --------------------------------------------------------
-    def __get_services(self):
-        if self.plugins is None:
-            self.plugins = {}
-        return self.plugins
+    def __get_services(self, allowLocal=True, allowRemote=True):
+        services = {}
+        if allowRemote:
+            services.update(self.remote_services)
+        if allowLocal:
+            services.update(self.local_services)
+        return services
 
-    def __make_path_config(self, config):
-        if "path" in config and "handler_settings" in config:
-            # config["handler_settings"]["module"] = self
-            return (config["path"],
-                    config["handler"],
-                    config["handler_settings"])
-        elif "path" in config:
-            return (config["path"], config["handler"], {"module": self})
-        elif "handler_settings" in config:
-            #  config["handler_settings"]["module"] = self
-            return (self.__make_fall_back_path(config["service_name"]),
-                    config["handler"],
-                    config["handler_settings"])
-        else:
-            return (self.__make_fall_back_path(config["service_name"]),
-                    config["handler"],
-                    {"module": self})
+    def get_matching(self, dictionary, topic):
+        # Get matching entries in dictionary, based on topic.
+        # use regular expressions
+        regex = fnmatch.translate(str(topic))
+        reObj = re.compile(regex)
+        return (key for key in dictionary if reObj.search(key))
 
-    def __make_fall_back_path(self, service_name):
-        return r'\/' + str(service_name) + r"\/|\/" + str(service_name)
+    def build_topic(self, config):
+        # takes json:
+        # returns topic
+        service_type = "*"
+        service_category = "*"
+        service_name = "*"
+        host_address = "*"
+        if("service_type" in config):
+            service_type = config["service_type"]
+        if("service_name" in config):
+            service_name = config["service_name"]
+        if("host_address" in config):
+            host_address = config["host_address"]
+        if("service_category" in config):
+            service_category = config["service_category"]
+
+        return self.build_topic_from_fields(service_type,
+                                            service_category,
+                                            service_name,
+                                            host_address)
+
+    def build_topic_from_fields(self,
+                                service_type,
+                                service_category,
+                                service_name,
+                                host_address):
+        topic = service_type + "/" + service_category + "/" + service_name + "/" + host_address  # NOQA
+        return topic

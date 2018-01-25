@@ -46,8 +46,7 @@ class Plugin_module(object):
             self.settings["ui_modules"]["Websocket_Service_Module"] = uim.Websock_Service_Module
             self.settings["ui_modules"]["Head_Module"] = uim.Head_Module
 
-
-        #  Add exit handler:
+        # Add exit handler:
         atexit.register(self.termination_handler)
         #  add interrupt handler
         #  signal.signal(signal.SIGBREAK, self.exit_handler)

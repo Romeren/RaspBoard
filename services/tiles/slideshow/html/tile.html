@@ -1,0 +1,220 @@
+<div class="top"></div>
+<div class="buttom next"></div>
+<div class="buttom previous"></div>
+<style type="text/css">
+#slideshow div {
+    position:absolute;
+    left:0;
+    top: 0%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+#slideshow div.top{
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 1;
+    -webkit-transition: all 3s ease-in-out;
+}
+
+#slideshow div.out {
+    -webkit-transition: all 3s ease-in-out;
+}
+
+#slideshow div.buttom {
+    z-index: 0;
+    opacity: 1;
+    width: 0px;
+    height: 0px;
+    top: 50%;
+}
+
+#slideshow div.left {
+    left: -5%;
+}
+
+#slideshow div.right {
+    left: 100%;
+}
+
+#slideshow div.up {
+    left: 50%;
+    top: -100%;
+}
+
+#slideshow div.down {
+    left: 50%;
+    top: 105%;
+}
+</style>
+<script>
+var current_image = Math.floor(Math.random() * 10000);
+var slideshow_controller = null;
+var rotation_interval = null;
+var wait_time = 60000;
+
+class slider_controller {
+    constructor(start_image, max_buffer_length, loadTime, transitionTime) {
+        this.isIdling = true;
+        this.index = start_image;
+        this.max_buffer_length = max_buffer_length;
+
+        this.loadTime = loadTime; // time to load image
+        this.transitionTime = transitionTime; // time to make image transition
+
+        this.previous = [];
+        this.next = [];
+        this.current = "";
+
+
+        this.init_fill_buffer();
+    }
+
+    init_fill_buffer(){
+        this.get_image_url(this.index, (e)=>{
+            this.current = e;
+            $('#slideshow .top').css("background-image", 'url(' + e + ')');
+        });
+        for(var i = 0; i < this.max_buffer_length; i++){
+            this.get_image_url(this.index - (i+1), (e)=>{
+                this.previous.push(e);
+                if(this.previous.length == 1){
+                    $('#slideshow .buttom.previous').css("background-image", 'url('+e+')');
+                }
+            });
+            this.get_image_url(this.index + (i+1), (e)=>{
+                this.next.push(e);
+                if(this.next.length == 1){
+                    $('#slideshow .buttom.next').css("background-image", 'url('+e+')');
+                }
+            });
+        }
+    }
+
+    get_image_url(image_id, callback){
+        $.ajax({
+            type: 'GET',
+            url: '{{ context.references.random_image[0].address }}?image_id=' + image_id ,
+            success: function(res){
+                callback(res);
+            },
+            error: function(err){
+                console.log(err);
+                callback(null);
+            }
+        });
+    }
+
+    next_image(){
+        this.isIdling = false;
+        // STEP FORWARD:
+        this.index += 1;
+        this.previous.splice(0,0, this.current);
+        this.previous.pop();
+        this.current = this.next.shift();
+
+        // change picture:
+        this.change_image(this.next[0], 'right', 'left', true);
+
+        // load new image into buffer:
+        var load_index = this.index + (this.max_buffer_length -1);
+        this.get_image_url(load_index, (e)=>{this.next.push(e);});
+    }
+
+    previous_image(){
+        this.isIdling = false;
+        // STEP BACK:
+        this.index -= 1;
+        this.next.splice(0,0, this.current);
+        this.next.pop();
+        this.current = this.previous.shift();
+
+        // change picture:
+        this.change_image(this.previous[0], 'left', 'right', false);
+
+        // load new image into buffer:
+        var load_index = this.index - (this.max_buffer_length -1);
+        this.get_image_url(load_index, (e)=>{this.previous.push(e);});
+
+    }
+
+    change_image(url, fromDir, toDir, isNext){
+        var buffered = isNext ? 'next' : 'previous';
+        var btm = $('#slideshow .buttom.' + buffered);
+        btm.attr('class', 'buttom ' + fromDir);
+
+        var newNode = $('<div class="buttom ' + buffered + '"></div>')
+        newNode.css("background-image", 'url('+url+')');
+        $('#slideshow').append(newNode);
+        // btm.css('background-image', 'url("' + url + '")');
+        setTimeout(()=>{
+            var buffered = isNext ? 'next' : 'previous';
+            var buttom = $('#slideshow .buttom.'+fromDir);
+            var top = $('#slideshow .top');
+            buttom.attr('class', 'top');
+            top.attr('class', 'buttom out '+ toDir);
+            setTimeout(()=>{
+                var toChange = !isNext ? 'next' : 'previous';
+                $('#slideshow .buttom.' + toChange).remove();
+                $('#slideshow .buttom.out').attr('class', 'buttom ' + toChange);
+                this.isIdling = true;
+                // var btm = $('#slideshow .buttom.out');
+                // top.css("background-image", 'url('+url+')');
+                // btm.attr('class', 'buttom ' + buffered);
+            },this.transitionTime);
+        },this.loadTime);
+    }
+
+    isReady(){
+        return this.isReady;
+    }
+}
+
+$(function(){
+    slideshow_controller = new slider_controller(0,3,150, 3000);
+
+    rotation_interval = setInterval(function(){
+        slideshow_controller.next_image();
+    }, wait_time);
+
+    document.addEventListener('KEY_FASTFORWARD',function(){
+        // $('#test').text('KEY_FASTFORWARD');
+        if(rotation_interval != null){
+            clearInterval(rotation_interval);
+            rotation_interval = null;
+        }
+        if(slideshow_controller.isReady()){
+            slideshow_controller.next_image();
+        }
+    });
+    document.addEventListener('KEY_REWIND',function(){
+        // $('#test').text('KEY_REWIND');
+        if(rotation_interval != null){
+            clearInterval(rotation_interval);
+            rotation_interval = null;
+        }
+        if(slideshow_controller.isReady){
+            slideshow_controller.previous_image();
+        }
+    });
+    document.addEventListener('KEY_PLAY', function(){
+        if(rotation_interval == null){
+            if(slideshow_controller.isReady()){
+                slideshow_controller.next_image();
+            }
+            rotation_interval = setInterval(function(){
+                slideshow_controller.next_image();
+            }, wait_time);
+        }
+    });
+    document.addEventListener('KEY_PAUSE', function(){
+        if(rotation_interval != null){
+            clearInterval(rotation_interval);
+        }
+    });
+});
+</script>
