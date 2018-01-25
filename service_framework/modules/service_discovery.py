@@ -9,7 +9,7 @@ class Service(superClass):
     def initialize(self, module, stopevent):
         self.no_of_broadcasts = 1
         self.broadcast_interval = 3
-        self.own_ip_address = ''  # module.ip_address
+        self.own_ip_address = module.ip_address
         self.discovery_port = module.discovery_port
         self.discovery_msg = b'ECHO'
         self.discovery_msg_size = len(self.discovery_msg)
@@ -38,6 +38,7 @@ class Service(superClass):
         self.poller.register(self.sock, zmq.POLLIN)
 
     def discover(self):
+        time.sleep(2)
         echo_at = time.time()
         while(not self.module.stop_event.is_set()):
             # listen on port for incomming msg until it is time to send out a
@@ -48,9 +49,11 @@ class Service(superClass):
             echo_at = self.send_echo(echo_at)
 
     def listen_on_network(self, last_echo):
-        timeout = last_echo - time.time()
-        if(timeout < 0):
-            timeout = 0
+        timeout = 10
+        if(self.no_of_broadcasts > 0):
+            timeout = last_echo - time.time()
+            if(timeout < 0):
+                timeout = 0
 
         events = dict(self.poller.poll(1000 * timeout))
 

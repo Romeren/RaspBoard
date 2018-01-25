@@ -1,16 +1,13 @@
-import fnmatch
 import re
 
 
 class service_register(object):
     def __init__(self, module):
-        self.remote_services = {}
-        self.local_services = {}
+        self.services = {}
         self.module = module
 
-    def get_services(self, topic, allowLocal=True, allowRemote=True):
+    def get_services(self, topic):
         # request plugin at broker:
-        topic += "/*"
         clients = self.get_matching(self.__get_services(), topic)
 
         for key in clients:
@@ -18,7 +15,7 @@ class service_register(object):
 
     def get_service(self, topic):
         topic += "/*"
-        clients = util.get_matching(self.__get_services(), topic)
+        clients = self.get_matching(self.__get_services(), topic)
         elm = None
         for key in clients:
             elm = self.__get_services()[key]
@@ -26,12 +23,9 @@ class service_register(object):
 
         return elm
 
-    def add_local_service(self, config):
-        config['host_address'] = self.module.ip_address
-        config['port'] = self.module.port
+    def add_service(self, config):
         topic = self.build_topic(config)
-
-        self.local_services[topic] = config
+        self.services[topic] = config
         self.module.dispatch_event('SERVICE_ADDED_LOCALLY', (10, topic))
 
     def remove_service(self, topic):
@@ -40,19 +34,19 @@ class service_register(object):
     # --------------------------------------------------------
     # Utiliy functions
     # --------------------------------------------------------
-    def __get_services(self, allowLocal=True, allowRemote=True):
-        services = {}
-        if allowRemote:
-            services.update(self.remote_services)
-        if allowLocal:
-            services.update(self.local_services)
-        return services
+    def __get_services(self):
+        # services = {}
+        # if allowRemote:
+        #     services.update(self.remote_services)
+        # if allowLocal:
+        #     services.update(self.local_services)
+        return self.services
 
     def get_matching(self, dictionary, topic):
         # Get matching entries in dictionary, based on topic.
         # use regular expressions
-        regex = fnmatch.translate(str(topic))
-        reObj = re.compile(regex)
+        # regex = fnmatch.translate(str(topic))
+        reObj = re.compile(topic)
         return (key for key in dictionary if reObj.search(key))
 
     def build_topic(self, config):

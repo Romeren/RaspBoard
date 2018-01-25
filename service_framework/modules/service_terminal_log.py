@@ -10,7 +10,9 @@ class Service(superClass):
     def print_log(self, event):
         isInt, level = self.try_parse(self.module.log_level)
         if(isInt and event.type == 'LOG' and level <= event.data[0]):
-            print(event.data)
+            print(event.data[1:])
+        elif(isInt and event.type != 'LOG' and level == 0):
+            print(event.type)
         elif(not isInt and self.module.log_level == 'ALL'):
             if(event.type == 'LOG'):
                 print(event.data[1:])

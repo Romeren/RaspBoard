@@ -19,29 +19,29 @@ class Container(object):
     """docstring for Container"""
 
     def __init__(self, services, settings={}):
-        port = self.get_fieldordefault(settings, 'port', None)
-        discovery_port = self.get_fieldordefault(settings, 'discovery_port', None)  # NOQA
-        if(port is None or discovery_port is None):
-            print('Missing field in settings')
-            print('discovery_port:', discovery_port, 'port:', port)
-            return
-
         chars = string.ascii_letters + string.digits
         application_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))
+        cluster_authentication = ''.join(rnd.choice(chars) for _ in range(255))
+
+        port = self.get_fieldordefault(settings, 'port', 80)
+        discovery_port = self.get_fieldordefault(settings, 'discovery_port', 9999)  # NOQA
+        cluster_port = self.get_fieldordefault(settings, 'cluster_port', 9998)  # NOQA
 
         self.settings = settings
         # Debug and logging
         self.log_level = self.get_fieldordefault(settings, 'LOG_LEVEL', 0)
 
         # Safty and security
+        self.cluster_authentication = self.get_fieldordefault(settings, 'cluster_authentication', cluster_authentication)  # NOQA
         self.application_secret = self.get_fieldordefault(settings, 'application_secret', application_secret)  # NOQA
         self.cookie_secret = self.get_fieldordefault(settings, 'cookie_secret', cookie_secret)  # NOQA
         self.settings["cookie_secret"] = self.cookie_secret
 
         # Network configuration:
-        self.port = port
-        self.discovery_port = discovery_port
+        self.port = port                        # Port for accessing webserver
+        self.discovery_port = discovery_port    # Port for discovering services
+        self.cluster_port = cluster_port        # Port for cluster network
         self.ip_address = util.get_own_ipaddress()
 
         # Event System:
@@ -68,11 +68,13 @@ class Container(object):
 
         paths = []
         self.dispatch_event('LOG', (1, 'Available paths on webserver:'))
-        for config in self.service_register.get_services('rest'):
+        topic = 'rest/.*/.*/' + self.ip_address
+        for config in self.get_services(topic):
             path = self.make_path_config(config)
             self.dispatch_event('LOG', (10, path[0]))
             paths.append(path)
-        for config in self.service_register.get_services('websocket'):
+        topic = 'websocket/.*/.*/' + self.ip_address
+        for config in self.get_services(topic):
             path = self.make_path_config(config)
             self.dispatch_event('LOG', (10, path[0]))
             paths.append(path)
@@ -84,7 +86,10 @@ class Container(object):
 
     def start_threads(self):
         self.dispatch_event('LOG', (10, 'Starting threads', 'CONTAINER'))
-        for config in self.service_register.get_services('thread', allowRemote=False):
+        topic = 'thread/.*/.*/' + self.ip_address
+        for config in self.get_services(topic):
+            path = self.make_path_config(config)
+            self.dispatch_event('LOG', (10, path[0]))
             module = config["handler"]()
             t = Thread(target=module.initialize, args=(self,
                                                        self.stop_event
@@ -95,12 +100,15 @@ class Container(object):
 
     def configure_module(self, services):
         for config in services:
-            self.service_register.add_local_service(config)
+            config['host_address'] = self.ip_address
+            config['port'] = self.port
+            self.service_register.add_service(config)
 
-    def get_services(self, topic, allowLocal=True, allowRemote=True):
-        return self.service_register.get_services(topic,
-                                                  allowLocal=allowLocal,
-                                                  allowRemote=allowRemote)
+    def get_services(self, topic):
+        return self.service_register.get_services(topic)
+
+    def build_topic(self, config):
+        return self.service_register.build_topic(config)
 
     def __setup_default_settings__(self):
         # Add exit handler:
@@ -149,6 +157,9 @@ class Container(object):
     def dispatch_event(self, event_type, event_data):
         event = frameworkEvent(event_type, event_data)
         self.event_dispatcher.dispatch_event(event)
+
+    def add_event_listener(self, event_type, listener):
+        self.event_dispatcher.add_event_listener(event_type, listener)
 # --------------------------------------------------------
 # Exit and termination handlers:
 # --------------------------------------------------------

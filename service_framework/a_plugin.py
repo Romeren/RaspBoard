@@ -4,6 +4,7 @@
 # from plugin_module import Plugin_module
 import json
 import os.path
+from service_framework.common.utilities import placeholder
 import sys
 from tornado import gen
 from tornado import httpclient
@@ -11,13 +12,7 @@ from tornado import template
 from tornado import web
 from tornado import websocket
 from urllib import urlencode
-
 cl = []
-
-
-class placeholder(object):
-    def __str__(self):
-        return self.__dict__
 
 
 class BaseHandler(object):
@@ -81,20 +76,25 @@ class BaseHandler(object):
 
     def make_dependency_ref(self, service):
         if(service is None):
-            return self.__get_service_ref(service_name="", addr="")
+            return self.__get_service_ref(service_name="",
+                                          addr="",
+                                          service_type="")
         addr = self.get_service_address_from_request(service)
         return self.__get_service_ref(service_name=service['service_name'],
-                                      addr=addr)
+                                      addr=addr,
+                                      service_type=service['service_type'])
 
     def __get_service_ref(self,
                           service_name,
                           addr,
+                          service_type,
                           error=False):
         ref = placeholder()
         setattr(ref, "name", service_name.replace("_", " "))
         setattr(ref, "service_name_js", service_name.replace("/", "\\\/"))
         setattr(ref, "service_name", service_name)
         setattr(ref, "address", addr)
+        setattr(ref, "service_type", service_type)
         setattr(ref, "hasError", error)
         return ref
 
