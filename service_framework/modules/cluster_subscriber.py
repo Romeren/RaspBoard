@@ -25,8 +25,8 @@ class Service(superClass):
         ip_address = self.try_get(event.data, 'ip_address')
         port = self.try_get(event.data, 'cluster_port')
 
-        if(port is None or ip_address is None or (ip_address not None and 
-                                                  port not None and 
+        if(port is None or ip_address is None or (ip_address is not None and 
+                                                  port is not None and 
                                                   ip_address == self.module.ip_address and 
                                                   port == self.module.cluster_port)):
             return
