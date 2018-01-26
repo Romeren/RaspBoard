@@ -20,6 +20,8 @@ class Container(object):
     """docstring for Container"""
 
     def __init__(self, services, settings={}):
+        reload(sys)  
+        sys.setdefaultencoding('utf8')
         chars = string.ascii_letters + string.digits
         application_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))

@@ -45,7 +45,7 @@ class Service(superClass):
             if(self.pub_sub_encryption_key is not None):
                 aes = pyaes.AESModeOfOperationCTR(self.pub_sub_encryption_key)
                 message = aes.encrypt(message)
-            self.socket.send(message)
+            self.socket.send_multipart(message)
 
         if(self.key_change_event_name == event_type):
             self.pub_sub_encryption_key = event.data
