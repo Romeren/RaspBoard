@@ -49,7 +49,7 @@ class Service(superClass):
 
     def recieve_msg(self):
         while(not self.stopevent.is_set()):
-            msg = self.socket.recv()
+            msg = self.socket.recv_multipart()
             
             isSuccess, event = self.parse_msg_to_event(msg)
             if(isSuccess):
