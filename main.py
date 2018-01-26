@@ -23,6 +23,9 @@ plugins.append(discovery)
 from service_framework.modules.service_connector import config as connector
 plugins.append(connector)
 
+from service_framework.modules.Killer import config as kill
+plugins.append(kill)
+
 from service_framework.read_file import get_content
 
 cluster_authentication = get_content('cluster_key.key')
@@ -34,10 +37,6 @@ system_settings = {'port': 8080,
                    }
 framework(plugins,
           settings=system_settings)
-
-raw_input('PRESS')
-
-
 
 
 
