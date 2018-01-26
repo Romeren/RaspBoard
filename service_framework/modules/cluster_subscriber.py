@@ -35,10 +35,10 @@ class Service(superClass):
     def recieve_msg(self):
         while(not self.stopevent.is_set()):
             msg = self.socket.recv()
-            self.module.dispatch_event('LOG', (1,
-                                               'RECIVED MSG',
-                                               msg,
-                                               config['service_name']))
+            # self.module.dispatch_event('LOG', (1,
+            #                                    'RECIVED MSG',
+            #                                    msg,
+            #                                    config['service_name']))
 
     def try_get(self, obj, field, default=None):
         if(field in obj):

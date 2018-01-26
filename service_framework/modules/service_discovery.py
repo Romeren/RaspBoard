@@ -1,5 +1,4 @@
 from service_framework.a_plugin import ThreadHandler as superClass
-from service_framework.events.event_module import Event as frameworkEvent
 import socket
 import time
 import zmq
@@ -73,21 +72,19 @@ class Service(superClass):
                          addr_info)
 
     def handle_incoming_discovery(self, msg, addr_info):
-        event = frameworkEvent('SERVICE_CONTAINER_DISCOVERED',
-                               data=(addr_info, msg))
-        self.module.event_dispatcher.dispatch_event(event)
+        self.module.dispatch_event('SERVICE_CONTAINER_DISCOVERED',
+                                   (addr_info, msg))
 
     def send_echo(self, last_echo):
         # broadcast beacon
         if(self.no_of_broadcasts > 0 and time.time() >= last_echo):
             self.no_of_broadcasts -= 1
-            event = frameworkEvent('LOG',
-                                   data=(1,
-                                         'SERVICE_BROADCASTING',
-                                         self.discovery_msg,
-                                         config['service_name']
-                                         ))
-            self.module.event_dispatcher.dispatch_event(event)
+            self.module.dispatch_event('LOG',
+                                       (1,
+                                        'SERVICE_BROADCASTING',
+                                        self.discovery_msg,
+                                        config['service_name']
+                                        ))
             self.sock.sendto(self.discovery_msg,
                              0,
                              (self.broadcast_address, self.discovery_port))

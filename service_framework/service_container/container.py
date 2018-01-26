@@ -155,7 +155,7 @@ class Container(object):
             return default
 
     def dispatch_event(self, event_type, event_data):
-        event = frameworkEvent(event_type, event_data)
+        event = frameworkEvent(event_type, self.ip_address, event_data)
         self.event_dispatcher.dispatch_event(event)
 
     def add_event_listener(self, event_type, listener):

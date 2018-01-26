@@ -12,11 +12,12 @@ class Event(object):
     Generic event to use with EventDispatcher.
     """
 
-    def __init__(self, event_type, data=None):
+    def __init__(self, event_type, origin_host, data=None):
         """
         The constructor accepts an event type as string and a custom data
         """
         self._type = event_type
+        self.origin_host = origin_host
         self._data = data
 
     @property

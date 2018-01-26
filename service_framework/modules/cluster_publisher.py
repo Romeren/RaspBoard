@@ -23,8 +23,10 @@ class Service(superClass):
 
     def publish(self, event):
         event_type = event.type
+        event_origin = event.origin_host
         event_data = str(event.data)
-        self.socket.send('%s %s' % (event_type, event_data))
+        if(event_origin == self.module.ip_address):
+            self.socket.send('%s %s %s' % (event_type, event_origin, event_data))
 
 
 config = {
