@@ -38,19 +38,20 @@ class Service(superClass):
             msg = self.socket.recv()
             
             isSuccess, event = self.parse_msg_to_event(msg)
-            if(isSuccess):
-                self.module.event_dispatcher.dispatch_event(event)
-            else:
-                self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
+            # if(isSuccess):
+            print(msg)
+                # self.module.event_dispatcher.dispatch_event(event)
+            # else:
+            #     self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
 
     def parse_msg_to_event(self, msg):
         try:
             e_t, e_org, e_d = msg.split(' ', 2)
             
-            try:
-                e_d = self.load_message(e_d)
-            except:
-                return False, e_d
+            # try:
+            #     e_d = self.load_message(e_d)
+            # except:
+            #     return False, e_d
 
             event = frameworkEvent(e_t, e_org, e_d)
             return True, event
