@@ -26,6 +26,7 @@ class Service(superClass):
         event_origin = event.origin_host
         event_data = self.dump_message(event.data)
         if(event_origin == self.module.ip_address):
+            print('PUBLISH', event_origin)
             self.socket.send('%s %s %s' % (event_type, event_origin, event_data))
 
 
