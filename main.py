@@ -25,7 +25,8 @@ plugins.append(connector)
 
 from service_framework.read_file import get_content
 
-cluster_authentication = get_content('cluster_key.key')
+isThere, content = get_content('cluster_key.key')
+cluster_authentication = 
 system_settings = {'port': 8080,
                    'discovery_port': 9999,
                    'cluster_port': 9998,
