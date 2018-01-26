@@ -1,4 +1,5 @@
 from service_framework.a_plugin import ThreadHandler as superClass
+from service_framework.events.event_module import Event as frameworkEvent
 import zmq
 
 
@@ -35,10 +36,27 @@ class Service(superClass):
     def recieve_msg(self):
         while(not self.stopevent.is_set()):
             msg = self.socket.recv()
-            # self.module.dispatch_event('LOG', (1,
-            #                                    'RECIVED MSG',
-            #                                    msg,
-            #                                    config['service_name']))
+            
+            isSuccess, event = self.parse_msg_to_event(msg)
+            if(isSuccess):
+                self.module.event_dispatcher.dispatch_event(event)
+            else:
+                self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
+
+    def parse_msg_to_event(self, msg):
+        try:
+            e_t, e_org, e_d = msg.split(' ', 2)
+            
+            try:
+                e_d = self.load_message(e_d)
+            except:
+                return False, e_d
+
+            event = frameworkEvent(e_t, e_org, e_d)
+            return True, event
+        except:
+            return False, msg
+
 
     def try_get(self, obj, field, default=None):
         if(field in obj):

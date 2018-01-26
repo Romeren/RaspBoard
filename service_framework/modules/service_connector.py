@@ -35,8 +35,9 @@ class Service(superClass):
         http_client = HTTPClient()
         try:
             response = http_client.fetch(url)
-            response = self.load_message(response.body)
-            self.module.dispatch_event(self.obtained_event, response)
+            if(response.body != None):
+                response = self.load_message(response.body)
+                self.module.dispatch_event(self.obtained_event, response)
         except HTTPError as e:
             self.module.dispatch_event('LOG', (1, e, config['service_name']))
         except Exception as e:

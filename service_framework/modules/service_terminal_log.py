@@ -12,7 +12,7 @@ class Service(superClass):
         if(isInt and event.type == 'LOG' and level <= event.data[0]):
             print(event.origin_host, event.data[1:])
         elif(isInt and event.type != 'LOG' and level == 0):
-            print(event.type)
+            print(event.origin_host, event.type)
         elif(not isInt and self.module.log_level == 'ALL'):
             if(event.type == 'LOG'):
                 print(event.origin_host, event.data[1:])
