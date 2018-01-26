@@ -9,7 +9,7 @@ def change_key(event):
 class Service(superClass):
     def initialize(self, module):
         self.module = module
-        self.module.add_event_listener('PUBLISH_KEY_CHANGED',)
+        self.module.add_event_listener('PUBLISH_KEY_CHANGED', change_key)
         self.module.dispatch_event('PUBLISH_ENCRYPTION_KEY_REQUEST', None)
 
     def get(self):
