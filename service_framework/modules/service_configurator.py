@@ -1,10 +1,16 @@
 from service_framework.a_plugin import RestHandler as superClass
 
 
+encryption_key = None
+
+def change_key(event):
+    encryption_key = event.data
+
 class Service(superClass):
     def initialize(self, module):
         self.module = module
-        self.module.dispatch_event('PUBLISH_ENCRYPTION_KEY_REQUEST', key_changed)
+        self.module.add_event_listener('PUBLISH_KEY_CHANGED',)
+        self.module.dispatch_event('PUBLISH_ENCRYPTION_KEY_REQUEST', None)
 
     def get(self):
         authentication = self.get_argument('authentication', None)
