@@ -1,14 +1,10 @@
 from service_framework.a_plugin import RestHandler as superClass
 
-pub_sub_encryption_key = None
-
-def key_changed(event):
-    pub_sub_encryption_key = event.data
 
 class Service(superClass):
     def initialize(self, module):
         self.module = module
-        self.module.add_event_listener('PUBSUB_KEY_CHANGED', key_changed)
+        self.module.dispatch_event('PUBLISH_ENCRYPTION_KEY_REQUEST', key_changed)
 
     def get(self):
         authentication = self.get_argument('authentication', None)
@@ -49,13 +45,14 @@ class Service(superClass):
         gsr = [self.module.build_topic(p)
                for p in self.module.get_services(topic)]
         response = {
+            'raspboard_id': self.module.raspboard_id,
             'ip_address': self.module.ip_address,
             'webserver_port': self.module.port,
             'discovery_port': self.module.discovery_port,
             'cluster_port': self.module.cluster_port,
             'application_secret': self.module.application_secret,
             'cookie_secret': self.module.cookie_secret,
-            'pub_sub_encryption_key': pub_sub_encryption_key,
+            'publish_key': pub_sub_encryption_key,
             'local_service_register': lsr,
             'global_service_register': gsr
         }

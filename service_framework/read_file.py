@@ -1,5 +1,6 @@
 import random as rnd
 import string
+# import uuid
 
 
 def __get_content__(filename):
@@ -16,7 +17,13 @@ def __create_file__(filename, content):
     file = open(filename, 'w+')
     file.write(content)
     file.close()
-    
+
+def get_id(filename):
+    isSuccess, content = __get_content__(filename)
+    if(not isSuccess):
+        content = str(uuid.uuid4())
+        __create_file__(filename, content)
+    return content 
 
 def get_content(filename, content_length=255):
     isSuccess, content = __get_content__(filename)

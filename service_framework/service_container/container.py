@@ -11,6 +11,7 @@ import signal
 import string
 import sys
 import os
+import uuid
 from threading import Event
 from threading import Thread
 import time
@@ -27,10 +28,8 @@ class Container(object):
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cluster_authentication = ''.join(rnd.choice(chars) for _ in range(255))
 
-        port = self.get_fieldordefault(settings, 'port', 80)
-        discovery_port = self.get_fieldordefault(settings, 'discovery_port', 9999)  # NOQA
-        cluster_port = self.get_fieldordefault(settings, 'cluster_port', 9998)  # NOQA
 
+        self.raspboard_id = self.get_fieldordefault(settings, 'raspboard_id', str(uuid.uuid4()))
         self.settings = settings
         # Debug and logging
         self.log_level = self.get_fieldordefault(settings, 'LOG_LEVEL', 0)
@@ -42,9 +41,9 @@ class Container(object):
         self.settings["cookie_secret"] = self.cookie_secret
 
         # Network configuration:
-        self.port = port                        # Port for accessing webserver
-        self.discovery_port = discovery_port    # Port for discovering services
-        self.cluster_port = cluster_port        # Port for cluster network
+        self.port = self.get_fieldordefault(settings, 'port', 80)                          # Port for accessing webserver
+        self.discovery_port = self.get_fieldordefault(settings, 'discovery_port', 9999)    # Port for discovering services
+        self.cluster_port = self.get_fieldordefault(settings, 'cluster_port', 9998)        # Port for cluster network
         self.ip_address = util.get_own_ipaddress()
 
         # Event System:

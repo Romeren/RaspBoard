@@ -3,10 +3,6 @@ from service_framework.service_container.container import Container as framework
 # plugins:
 plugins = []
 
-
-from service_framework.modules.service_key_system import config as keys
-plugins.append(keys)
-
 from service_framework.modules.cluster_publisher import config as pub
 from service_framework.modules.cluster_subscriber import config as sub
 
@@ -29,10 +25,13 @@ plugins.append(connector)
 from service_framework.modules.Killer import config as kill
 plugins.append(kill)
 
-from service_framework.read_file import get_content
+from service_framework.read_file import get_content, get_id
 
+raspboard_id = get_id('raspboard.id')
 cluster_authentication = get_content('cluster_key.key')
-system_settings = {'port': 8080,
+system_settings = {
+                   'raspboard_id': raspboard_id,
+                   'port': 8080,
                    'discovery_port': 9999,
                    'cluster_port': 9998,
                    'cluster_authentication': cluster_authentication,
