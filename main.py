@@ -4,6 +4,9 @@ from service_framework.service_container.container import Container as framework
 plugins = []
 
 
+from service_framework.modules.service_key_system import config as keys
+plugins.append(keys)
+
 from service_framework.modules.cluster_publisher import config as pub
 from service_framework.modules.cluster_subscriber import config as sub
 

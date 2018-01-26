@@ -72,7 +72,7 @@ class Service(superClass):
                          addr_info)
 
     def handle_incoming_discovery(self, msg, addr_info):
-        self.module.dispatch_event('SERVICE_CONTAINER_DISCOVERED',
+        self.module.dispatch_event('RASPBOARD_DISCOVERED',
                                    (addr_info, msg))
 
     def send_echo(self, last_echo):

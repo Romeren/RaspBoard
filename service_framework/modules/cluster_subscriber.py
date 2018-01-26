@@ -1,5 +1,6 @@
 from service_framework.a_plugin import ThreadHandler as superClass
 from service_framework.events.event_module import Event as frameworkEvent
+import pyaes
 import zmq
 
 
@@ -8,10 +9,15 @@ class Service(superClass):
         self.module = module
         self.stopevent = stopevent
 
+        self.pub_sub_encryption_key = None
+
         # subscribe to events of found RaspBoards when thier configuration
         # have been optained:
-        found_event = 'SERVICE_CONTAINER_CONFIGURATION_OPTAINED'
+        found_event = 'RASPBOARD_CONFIGURATION_OPTAINED'
         self.module.add_event_listener(found_event, self.subscribe)
+        
+        self.key_change_event_name = 'PUBSUB_KEY_CHANGED'
+        self.module.add_event_listener(self.key_change_event_name, self.encryption_key_changed)
 
         # init subscriber:
         self.context = zmq.Context()
@@ -20,10 +26,15 @@ class Service(superClass):
         self.socket.setsockopt(zmq.SUBSCRIBE, topFilter)
 
         self.recieve_msg()
+    
+    def encryption_key_changed(self, event):
+        self.pub_sub_encryption_key = event.data
 
     def subscribe(self, event):
         ip_address = self.try_get(event.data, 'ip_address')
         port = self.try_get(event.data, 'cluster_port')
+        pub_sub_encryption_key = self.try_get(event.data, 'pub_sub_encryption_key')
+        self.module.dispatch_event('SYSTEM_UPDATE_KEY', ('PUBSUB', pub_sub_encryption_key))
 
         if(port is None or ip_address is None or (ip_address is not None and 
                                                   port is not None and 
@@ -33,7 +44,7 @@ class Service(superClass):
 
         sub_url = 'tcp://%s:%s' % (ip_address, port)
         self.socket.connect(sub_url)
-        self.module.dispatch_event('SUBSCRIBED_TO_CONTAINER',
+        self.module.dispatch_event('SUBSCRIBED_TO_RASPBOARD',
                                    (sub_url, config['service_name']))
 
     def recieve_msg(self):
@@ -48,6 +59,11 @@ class Service(superClass):
                 self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
 
     def parse_msg_to_event(self, msg):
+        print(self.pub_sub_encryption_key)
+        if(self.pub_sub_encryption_key is not None):
+            aes = pyaes.AESModeOfOperationCTR(self.pub_sub_encryption_key)
+            msg = aes.decrypt(msg).decode('utf-8')
+
         try:
             e_t, e_org, e_d = msg.split(' ', 2)
             

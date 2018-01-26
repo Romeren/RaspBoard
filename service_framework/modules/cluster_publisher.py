@@ -1,4 +1,5 @@
 from service_framework.a_plugin import ThreadHandler as superClass
+import pyaes
 import time
 import zmq
 
@@ -8,6 +9,13 @@ class Service(superClass):
         self.module = module
         self.stopevent = stopevent
 
+        self.pub_sub_encryption_key = None
+        self.key_name = 'PUBSUB'
+        self.key_length = 32
+        self.key_type = 'BYTES'
+        self.shouldUpdate = True
+        self.key_change_event_name = self.key_name + '_KEY_CHANGED'
+        self.create_key_name = 'SYSTEM_CREATE_KEY'
         # subscribe to events of found RaspBoards when thier configuration
         # have been optained:
         found_event = '*'
@@ -24,10 +32,23 @@ class Service(superClass):
     def publish(self, event):
         event_type = event.type
         event_origin = event.origin_host
+        
         event_data = self.dump_message(event.data)
+        if(event_data is None):
+            event_data = event.data
+
+        if(self.pub_sub_encryption_key == None and event_type != self.create_key_name and event_type != self.key_change_event_name):
+            self.module.dispatch_event(self.create_key_name, (self.key_name, self.key_length, self.key_type, self.shouldUpdate))
+
         if(event_origin == self.module.ip_address):
-            print('PUBLISH', event_origin)
-            self.socket.send('%s %s %s' % (event_type, event_origin, event_data))
+            message = '%s %s %s' % (event_type, event_origin, event_data)
+            if(self.pub_sub_encryption_key is not None):
+                aes = pyaes.AESModeOfOperationCTR(self.pub_sub_encryption_key)
+                message = aes.encrypt(message)
+            self.socket.send(message)
+
+        if(self.key_change_event_name == event_type):
+            self.pub_sub_encryption_key = event.data
 
 
 config = {

@@ -28,8 +28,6 @@ class BaseHandler(object):
         try:
             return json.dumps(message)
         except Exception as e:
-            print(e)
-            print('JSON COULD NOT BE PARSED')
             return None
 
     def load_message(self, message):

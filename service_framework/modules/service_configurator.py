@@ -1,7 +1,14 @@
 from service_framework.a_plugin import RestHandler as superClass
 
+pub_sub_encryption_key = None
+
+def key_changed(event):
+    pub_sub_encryption_key = event.data
 
 class Service(superClass):
+    def initialize(self, module):
+        self.module = module
+        self.module.add_event_listener('PUBSUB_KEY_CHANGED', key_changed)
 
     def get(self):
         authentication = self.get_argument('authentication', None)
@@ -28,7 +35,7 @@ class Service(superClass):
                 return
             if(remote_port <= 0 or remote_port >= 65535):
                 return
-            event_type = 'SERVICE_CONTAINER_CONFIGURATION_OPTAINED'
+            event_type = 'RASPBOARD_CONFIGURATION_OPTAINED'
             self.module.dispatch_event(event_type, {
                 'ip_address': remote_ip,
                 'cluster_port': remote_port
@@ -48,6 +55,7 @@ class Service(superClass):
             'cluster_port': self.module.cluster_port,
             'application_secret': self.module.application_secret,
             'cookie_secret': self.module.cookie_secret,
+            'pub_sub_encryption_key': pub_sub_encryption_key,
             'local_service_register': lsr,
             'global_service_register': gsr
         }

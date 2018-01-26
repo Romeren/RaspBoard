@@ -10,8 +10,8 @@ class Service(superClass):
         self.module = module
         self.stopevent = stopevent
 
-        found_event = 'SERVICE_CONTAINER_DISCOVERED'
-        self.obtained_event = 'SERVICE_CONTAINER_CONFIGURATION_OPTAINED'
+        found_event = 'RASPBOARD_DISCOVERED'
+        self.obtained_event = 'RASPBOARD_CONFIGURATION_OPTAINED'
         self.module.add_event_listener(found_event, self.connect)
 
     def connect(self, event):
