@@ -58,7 +58,7 @@ class Service(superClass):
             'cluster_port': self.module.cluster_port,
             'application_secret': self.module.application_secret,
             'cookie_secret': self.module.cookie_secret,
-            'publish_key': pub_sub_encryption_key,
+            'publish_key': encryption_key,
             'local_service_register': lsr,
             'global_service_register': gsr
         }
