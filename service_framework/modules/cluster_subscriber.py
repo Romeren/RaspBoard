@@ -58,23 +58,21 @@ class Service(superClass):
                 if(event.type == 'PUBLISH_KEY_CHANGED'):
                     self.keys[raspid] = event.data
                     self.module.dispatch_event('LOG', (8, 'CHANGED SUBSCRIBE KEY', raspid, event.data, config['service_name']))
+                elif(event.type == 'TERMINATING' and raspid in self.keys):
+                    self.keys.pop(raspid, None)
                 else:
                     self.module.event_dispatcher.dispatch_event(event)
             else:
                 self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
 
     def parse_msg_to_event(self, msg):
-        print(msg[:30])
         rasp_id, msg = msg.split(' ', 1)
-        print(rasp_id)
-        if(rasp_id not in self.keys):
-            return False, None, None
         
-        key = self.keys[rasp_id]
-        
-        if(key is not None):
+        if(rasp_id in self.keys):
+            key = self.keys[rasp_id]
             aes = pyaes.AESModeOfOperationCTR(key.decode('base-64'))
             msg = aes.decrypt(msg).decode('utf-8')
+        
         try:
             e_t, e_org, e_d = msg.split(' ', 2)
             

@@ -167,7 +167,7 @@ class Container(object):
 # --------------------------------------------------------
 
     def termination_handler(self):
-        print("Terminating...")
+        self.dispatch_event('TERMINATING', 'TERMINATING')
         # unsubscripe from broker:
         # self.subscribe_to_broker(isSubscribing=False)
 
@@ -180,7 +180,8 @@ class Container(object):
             self.is_exiting = False
 
     def exit_handler(self, signal, frame):
-        print("INTERRUPTED! -terminating")
+        # print("INTERRUPTED! -terminating")
+        self.dispatch_event('TERMINATING', 'TERMINATING')
 
         # stop all threads
         self.stop_event.set()
