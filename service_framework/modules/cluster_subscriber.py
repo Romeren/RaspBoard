@@ -71,7 +71,7 @@ class Service(superClass):
         key = self.keys[rasp_id]
         
         if(key is not None):
-            aes = pyaes.AESModeOfOperationCTR(key)
+            aes = pyaes.AESModeOfOperationCTR(key.decode('base-64'))
             msg = aes.decrypt(msg).decode('utf-8')
         try:
             e_t, e_org, e_d = msg.split(' ', 2)

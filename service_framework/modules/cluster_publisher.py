@@ -11,7 +11,7 @@ class Service(superClass):
 
         self.key_length = 32
         self.key_name = 'PUBLISH'
-        self.encryption_key = os.urandom(self.key_length) 
+        self.encryption_key = os.urandom(self.key_length).encode('base-64')
         self.key_change_event_name = self.key_name + '_KEY_CHANGED'
         self.encryption_key_request = self.key_name + '_ENCRYPTION_KEY_REQUEST'
 
@@ -42,7 +42,7 @@ class Service(superClass):
         if(event_origin == self.module.ip_address):
             message = '%s %s %s' % (event_type, event_origin, event_data)
             if(self.encryption_key is not None):
-                aes = pyaes.AESModeOfOperationCTR(self.encryption_key)
+                aes = pyaes.AESModeOfOperationCTR(self.encryption_key.decode('base-64'))
                 message = aes.encrypt(message)
             self.socket.send_multipart(message)
 

@@ -28,6 +28,7 @@ class BaseHandler(object):
         try:
             return json.dumps(message)
         except Exception as e:
+            print(e)
             return None
 
     def load_message(self, message):

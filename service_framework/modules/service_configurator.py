@@ -22,6 +22,7 @@ class Service(superClass):
                                                                remote_port,
                                                                authentication))
 
+
         if(authentication is None):
             return
         # TODO(SECURITY): This is not a good way, HASH SALT ENCRYPTION!
@@ -51,6 +52,8 @@ class Service(superClass):
         topic = '.*/.*/.*/' + self.module.ip_address
         gsr = [self.module.build_topic(p)
                for p in self.module.get_services(topic)]
+
+
         response = {
             'raspboard_id': self.module.raspboard_id,
             'ip_address': self.module.ip_address,
@@ -63,7 +66,9 @@ class Service(superClass):
             'local_service_register': lsr,
             'global_service_register': gsr
         }
-        self.write(self.dump_message(response))
+
+        response = self.dump_message(response)
+        self.write(response)
 
 
 config = {
