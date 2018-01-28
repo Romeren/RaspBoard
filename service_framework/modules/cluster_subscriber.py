@@ -52,7 +52,7 @@ class Service(superClass):
     def recieve_msg(self):
         while(not self.stopevent.is_set()):
             msg = self.socket.recv()
-            print(msg)
+            # print(msg)
             isSuccess, raspid, event = self.parse_msg_to_event(msg)
             if(isSuccess):
                 if(event.type == 'PUBLISH_KEY_CHANGED'):
@@ -64,29 +64,29 @@ class Service(superClass):
                 self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
 
     def parse_msg_to_event(self, msg):
-        print(msg)
+        print(msg[:30])
         rasp_id, msg = msg.split(' ', 1)
         print(rasp_id)
-        # if(rasp_id not in self.keys):
-        #     return False, None, None
+        if(rasp_id not in self.keys):
+            return False, None, None
         
-        # key = self.keys[rasp_id]
+        key = self.keys[rasp_id]
         
-        # if(key is not None):
-        #     aes = pyaes.AESModeOfOperationCTR(key.decode('base-64'))
-        #     msg = aes.decrypt(msg).decode('utf-8')
-        # try:
-        #     e_t, e_org, e_d = msg.split(' ', 2)
+        if(key is not None):
+            aes = pyaes.AESModeOfOperationCTR(key.decode('base-64'))
+            msg = aes.decrypt(msg).decode('utf-8')
+        try:
+            e_t, e_org, e_d = msg.split(' ', 2)
             
-        #     try:
-        #         e_d = self.load_message(e_d)
-        #     except:
-        #         return False, rasp_id, e_d
+            try:
+                e_d = self.load_message(e_d)
+            except:
+                return False, rasp_id, e_d
 
-        #     event = frameworkEvent(e_t, e_org, e_d)
-        #     return True, rasp_id, event
-        # except:
-        #     return False, rasp_id, msg
+            event = frameworkEvent(e_t, e_org, e_d)
+            return True, rasp_id, event
+        except:
+            return False, rasp_id, msg
 
 
     def try_get(self, obj, field, default=None):
