@@ -51,7 +51,7 @@ class Service(superClass):
 
     def recieve_msg(self):
         while(not self.stopevent.is_set()):
-            msg = self.socket.recv_multipart()
+            msg = self.socket.recv()
             print(msg)
             isSuccess, raspid, event = self.parse_msg_to_event(msg)
             if(isSuccess):
