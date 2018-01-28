@@ -44,6 +44,7 @@ class Service(superClass):
             if(self.encryption_key is not None):
                 aes = pyaes.AESModeOfOperationCTR(self.encryption_key.decode('base-64'))
                 message = aes.encrypt(message)
+            message = '%s %s' % (self.module.raspboard_id, message)
             self.socket.send(message)
 
 
