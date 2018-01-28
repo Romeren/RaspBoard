@@ -18,7 +18,7 @@ class Service(superClass):
         
         # self.key_change_event_name = 'PUBSUB_KEY_CHANGED'
         # self.module.add_event_listener(self.key_change_event_name, self.encryption_key_changed)
-        self.read_keys = {}
+        self.keys = {}
 
         # init subscriber:
         self.context = zmq.Context()
@@ -34,7 +34,7 @@ class Service(superClass):
         port = self.try_get(event.data, 'cluster_port')
         encryption_key = self.try_get(event.data, 'publish_key')
 
-        print('CONFIG', rasp_id, ip_address, port, encryption_key)
+        # print('CONFIG', rasp_id, ip_address, port, encryption_key)
         if(port is None or 
            ip_address is None or 
            rasp_id is None or
@@ -42,7 +42,7 @@ class Service(superClass):
             ip_address == self.module.ip_address and 
             port == self.module.cluster_port)):
             return
-        print('SUBSCRIBING')
+        # print('SUBSCRIBING')
         self.keys[rasp_id] = encryption_key
         sub_url = 'tcp://%s:%s' % (ip_address, port)
         self.socket.connect(sub_url)

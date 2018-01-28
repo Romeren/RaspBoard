@@ -36,12 +36,15 @@ class Service(superClass):
         try:
             response = http_client.fetch(url)
             if(response.body != None):
+                print(response.body)
                 response = self.load_message(response.body)
                 self.module.dispatch_event(self.obtained_event, response)
         except HTTPError as e:
-            self.module.dispatch_event('LOG', (1, e, config['service_name']))
+            print(e)
+            # self.module.dispatch_event('LOG', (1, e, config['service_name']))
         except Exception as e:
-            self.module.dispatch_event('LOG', (1, e, config['service_name']))
+            print(e)
+            # self.module.dispatch_event('LOG', (1, e, config['service_name']))
         http_client.close()
 
 
