@@ -63,6 +63,9 @@ class Service(superClass):
                 else:
                     self.module.event_dispatcher.dispatch_event(event)
             else:
+                print(msg)
+                print(raspid)
+                print(event)
                 self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
 
     def parse_msg_to_event(self, msg):
