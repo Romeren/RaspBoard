@@ -73,7 +73,7 @@ class Service(superClass):
 
     def handle_incoming_discovery(self, msg, addr_info):
         self.module.dispatch_event('RASPBOARD_DISCOVERED',
-                                   (addr_info, msg))
+                                   (addr_info, msg, True))
 
     def send_echo(self, last_echo):
         # broadcast beacon

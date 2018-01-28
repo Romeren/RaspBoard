@@ -17,6 +17,7 @@ class Service(superClass):
     def connect(self, event):
         service_addr, broad_cast_port = event.data[0]
         service_port = event.data[1]
+        shouldrequestConnect = event.data[2]
 
         context = Context()
         context = self.set_dependencies(context, config)
@@ -30,7 +31,8 @@ class Service(superClass):
 
         url = self.get_service_address_from_request(reciever_info)
         url = url + '?authentication=' + self.module.cluster_authentication
-        url = url + '&port=' + str(self.module.port)
+        if(shouldrequestConnect):
+            url = url + '&port=' + str(self.module.port)
 
         http_client = HTTPClient()
         try:
