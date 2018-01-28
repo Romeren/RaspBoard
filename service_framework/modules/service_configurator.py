@@ -4,6 +4,7 @@ from service_framework.a_plugin import RestHandler as superClass
 encryption_key = None
 
 def change_key(event):
+    global encryption_key
     encryption_key = event.data
 
 class Service(superClass):
