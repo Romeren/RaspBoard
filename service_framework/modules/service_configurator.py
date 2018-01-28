@@ -15,7 +15,7 @@ class Service(superClass):
 
     def get(self):
         authentication = self.get_argument('authentication', None)
-        remote_port = self.get_argument('cluster_port', None)
+        remote_port = self.get_argument('port', None)
         remote_ip = self.request.remote_ip
 
         self.module.dispatch_event('REQUESTED_CONFIGURATION', (remote_ip,

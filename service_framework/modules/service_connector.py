@@ -30,7 +30,7 @@ class Service(superClass):
 
         url = self.get_service_address_from_request(reciever_info)
         url = url + '?authentication=' + self.module.cluster_authentication
-        url = url + '&cluster_port=' + str(self.module.cluster_port)
+        url = url + '&port=' + str(self.module.port)
 
         http_client = HTTPClient()
         try:
