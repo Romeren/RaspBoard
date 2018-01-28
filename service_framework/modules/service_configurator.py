@@ -39,11 +39,8 @@ class Service(superClass):
                 return
             if(remote_port <= 0 or remote_port >= 65535):
                 return
-            event_type = 'RASPBOARD_CONFIGURATION_OPTAINED'
-            self.module.dispatch_event(event_type, {
-                'ip_address': remote_ip,
-                'cluster_port': remote_port
-            })
+            event_type = 'RASPBOARD_DISCOVERED'
+            self.module.dispatch_event(event_type, ((remote_ip, ''),  remote_port)
 
         topic = '.*/.*/.*/' + self.module.ip_address
         lsr = [self.module.build_topic(p)
