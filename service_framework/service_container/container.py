@@ -106,6 +106,9 @@ class Container(object):
             config['port'] = self.port
             self.service_register.add_service(config)
 
+    def add_service(self, config):
+        self.service_register.add_service(config)
+
     def get_services(self, topic):
         return self.service_register.get_services(topic)
 
@@ -169,7 +172,7 @@ class Container(object):
     def termination_handler(self):
         if(not self.stop_event.is_set()):
             self.dispatch_event('TERMINATING', 'TERMINATING')
-            time.sleep(1)
+            # time.sleep(1)
         # unsubscripe from broker:
         # self.subscribe_to_broker(isSubscribing=False)
 
@@ -185,7 +188,7 @@ class Container(object):
         # print("INTERRUPTED! -terminating")
         if(not self.stop_event.is_set()):
             self.dispatch_event('TERMINATING', 'TERMINATING')
-            time.sleep(1)
+            # time.sleep(1)
 
         # stop all threads
         self.stop_event.set()

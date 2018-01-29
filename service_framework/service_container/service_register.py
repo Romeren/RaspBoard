@@ -26,7 +26,7 @@ class service_register(object):
     def add_service(self, config):
         topic = self.build_topic(config)
         self.services[topic] = config
-        self.module.dispatch_event('SERVICE_ADDED_LOCALLY', (10, topic))
+        self.module.dispatch_event('SERVICE_ADDED', (topic))
 
     def remove_service(self, topic):
         self.__get_services().pop(topic, None)

@@ -9,6 +9,8 @@ from service_framework.modules.cluster_subscriber import config as sub
 plugins.append(pub)
 plugins.append(sub)
 
+from service_framework.modules.service_registry_share import config as share
+plugins.append(share)
 
 from service_framework.modules.service_terminal_log import config as log
 plugins.append(log)
