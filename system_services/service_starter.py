@@ -1,10 +1,12 @@
-from a_service import RestHandler as superClass
+from RaspBoard.a_service import RestHandler as superClass
 import cPickle as pickle
 
 class Service(superClass):
-    
+    def get(self):
+        self.write('try post!')
+
     def post(self):
-        config = self.get_argument("config")
+        config = self.get_argument("config", None)
         auth = self.get_argument("authentication", None)
         if('service_name' not in config or
            'handler' not in config or

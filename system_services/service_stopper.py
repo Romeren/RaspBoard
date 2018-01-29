@@ -1,4 +1,4 @@
-from a_service import RestHandler as superClass
+from RaspBoard.a_service import RestHandler as superClass
 
 class Service(superClass):
     

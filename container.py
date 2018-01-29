@@ -1,13 +1,12 @@
 import atexit  # NOQA
-from tornado import web, ioloop  # NOQA
-# from service_framework.common import utilities as util
+from tornado import web, ioloop
 import random as rnd
-from common import utilities as util
-from common_modules import ui_modules as uim
-from common.event_module import Event as frameworkEvent
-from common.event_module import EventDispatcher as dispatcher
-from common.service_register import service_register
-import common.read_file as read_file
+from RaspBoard.common import utilities as util
+from RaspBoard.common_modules import ui_modules as uim
+from RaspBoard.common.event_module import Event as frameworkEvent
+from RaspBoard.common.event_module import EventDispatcher as dispatcher
+from RaspBoard.common.service_register import service_register
+import RaspBoard.common.read_file as read_file
 import signal
 import string
 import sys

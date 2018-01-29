@@ -1,4 +1,4 @@
-from a_service import ThreadHandler as superClass
+from RaspBoard.a_service import ThreadHandler as superClass
 
 
 class Service(superClass):
