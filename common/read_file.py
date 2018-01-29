@@ -1,6 +1,7 @@
 import random as rnd
 import string
-# import uuid
+import os
+import uuid
 
 
 def __get_content__(filename):
@@ -18,6 +19,10 @@ def __create_file__(filename, content):
     file.write(content)
     file.close()
 
+def create_dir(dir_name):
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
 def get_id(filename):
     isSuccess, content = __get_content__(filename)
     if(not isSuccess):
@@ -25,7 +30,7 @@ def get_id(filename):
         __create_file__(filename, content)
     return content 
 
-def get_content(filename, content_length=255):
+def get_key_content(filename, content_length=255):
     isSuccess, content = __get_content__(filename)
     if(not isSuccess):
         letters = string.ascii_letters + string.digits

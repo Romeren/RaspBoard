@@ -7,6 +7,7 @@ from common_modules import ui_modules as uim
 from common.event_module import Event as frameworkEvent
 from common.event_module import EventDispatcher as dispatcher
 from common.service_register import service_register
+import common.read_file
 import signal
 import string
 import sys
@@ -21,6 +22,7 @@ class Container(object):
     """docstring for Container"""
 
     def __init__(self, settings={}):
+        read_file.create_dir('virtual_dir')
         chars = string.ascii_letters + string.digits
         application_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))
@@ -64,6 +66,7 @@ class Container(object):
         t = Thread(target=self.start_webserver)
         t.daemon = True
         t.start()
+        time.sleep(2)
 
     def start_webserver(self):
         # add listener to port:
@@ -71,6 +74,46 @@ class Container(object):
         self.app.listen(self.port)
         ioloop.IOLoop.instance().start()
 
+    def remove_services(self, topic):
+        services = self.service_register.get_services(topic)
+        removed = []
+        for config in services:
+            service_topic = self.service_register.build_topic(config)
+            if(config is None):
+                continue
+        
+            if(config['host_address'] != self.ip_address or
+               config['port'] != self.port):
+               continue
+            
+            if('handler' not in config):
+                continue
+
+            if(config['service_type'] == 'thread'):
+                t, stop_event = self.threads.pop(service_topic, None)
+                stop_event.set()
+                removed.append(service_topic)
+            elif(config['service_type'] == 'rest'):
+                handlers_to_remove = []
+                for tuble in self.app.handlers:
+                    x = tuble[1][0]
+                    if(x.handler_class == config['handler']):
+                        handlers_to_remove.append(tuble)
+                for h in handlers_to_remove:
+                    self.app.handlers.remove(h)
+                removed.append(service_topic)
+            elif(config['service_type'] == 'websocket'):
+                handlers_to_remove = []
+                for tuble in self.app.handlers:
+                    x = tuble[1][0]
+                    if(x.handler_class == config['handler']):
+                        handlers_to_remove.append(tuble)
+                for h in handlers_to_remove:
+                    self.app.handlers.remove(h)
+                removed.append(service_topic)
+        for t in removed:
+            self.service_register.remove_service(t)
+        
     def add_service(self, config):
         if('host_address' not in config):
             config['host_address'] = self.ip_address
@@ -87,11 +130,10 @@ class Container(object):
         path = self.make_path_config(config)
         if(config['service_type'] == 'thread'):
             handler = config["handler"]()
-            t = Thread(target=handler.initialize, args=(self,
-                                                    self.stop_event
-                                                    ))
+            e = Event()
+            t = Thread(target=handler.initialize, args=(self,e))
             t.daemon = True
-            self.threads[self.service_register.build_topic(config)] = t
+            self.threads[self.service_register.build_topic(config)] = (t, e)
             t.start()
         elif(config['service_type'] == 'rest'):
             self.app.add_handlers(r'', [path])
@@ -163,6 +205,9 @@ class Container(object):
 
         # stop all threads
         self.stop_event.set()
+        for key in self.threads:
+            t,e = self.threads[key]
+            e.set()
         time.sleep(1)
         # stop tornado:
         if(self.is_exiting):
@@ -177,6 +222,9 @@ class Container(object):
 
         # stop all threads
         self.stop_event.set()
+        for key in self.threads:
+            t,e = self.threads[key]
+            e.set()
         time.sleep(1)
         # stop tornado:
         if(self.is_exiting):
