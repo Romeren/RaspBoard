@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-  # NOQA
-from service_framework.service_container.container import Container as framework
+from service_framework.container import Container as framework
 # plugins:
 plugins = []
 
@@ -27,7 +27,7 @@ plugins.append(connector)
 from service_framework.modules.Killer import config as kill
 plugins.append(kill)
 
-from service_framework.read_file import get_content, get_id
+from service_framework.common.read_file import get_content, get_id
 
 raspboard_id = get_id('raspboard.id')
 cluster_authentication = get_content('cluster_key.key')

@@ -4,9 +4,9 @@ from tornado import web, ioloop  # NOQA
 import random as rnd
 from service_framework.common import utilities as util
 from service_framework.common_modules import ui_modules as uim
-from service_framework.events.event_module import Event as frameworkEvent
-from service_framework.events.event_module import EventDispatcher as dispatcher
-from service_framework.service_container.service_register import service_register
+from service_framework.common.event_module import Event as frameworkEvent
+from service_framework.common.event_module import EventDispatcher as dispatcher
+from service_framework.common.service_register import service_register
 import signal
 import string
 import sys

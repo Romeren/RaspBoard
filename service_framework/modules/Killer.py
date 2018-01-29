@@ -1,4 +1,4 @@
-from service_framework.a_plugin import ThreadHandler as superClass
+from service_framework.common.a_plugin import ThreadHandler as superClass
 import zmq
 
 
