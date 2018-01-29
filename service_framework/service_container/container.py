@@ -181,7 +181,7 @@ class Container(object):
 
     def exit_handler(self, signal, frame):
         # print("INTERRUPTED! -terminating")
-        self.dispatch_event('TERMINATING', 'TERMINATING')
+        # self.dispatch_event('TERMINATING', 'TERMINATING')
 
         # stop all threads
         self.stop_event.set()

@@ -38,6 +38,7 @@ class Service(superClass):
         if(port is None or 
            ip_address is None or 
            rasp_id is None or
+           rasp_id in self.keys or
            (ip_address is not None and port is not None and 
             ip_address == self.module.ip_address and 
             port == self.module.cluster_port)):
