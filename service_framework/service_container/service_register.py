@@ -30,6 +30,7 @@ class service_register(object):
 
     def remove_service(self, topic):
         self.__get_services().pop(topic, None)
+        self.module.dispatch_event('SERVICE_REMOVED', (topic))
 
     # --------------------------------------------------------
     # Utiliy functions
