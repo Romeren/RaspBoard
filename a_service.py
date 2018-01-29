@@ -4,7 +4,7 @@
 # from plugin_module import Plugin_module
 import json
 import os.path
-from service_framework.common.utilities import placeholder
+from common.utilities import placeholder
 import sys
 from tornado import gen
 from tornado import httpclient

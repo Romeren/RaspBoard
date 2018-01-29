@@ -1,5 +1,5 @@
-from service_framework.common.a_plugin import ThreadHandler as superClass
-from service_framework.common.utilities import placeholder as Context
+from a_service import ThreadHandler as superClass
+from common.utilities import placeholder as Context
 from tornado.httpclient import HTTPClient
 from tornado.httpclient import HTTPError
 

@@ -2,11 +2,11 @@ import atexit  # NOQA
 from tornado import web, ioloop  # NOQA
 # from service_framework.common import utilities as util
 import random as rnd
-from service_framework.common import utilities as util
-from service_framework.common_modules import ui_modules as uim
-from service_framework.common.event_module import Event as frameworkEvent
-from service_framework.common.event_module import EventDispatcher as dispatcher
-from service_framework.common.service_register import service_register
+from common import utilities as util
+from common_modules import ui_modules as uim
+from common.event_module import Event as frameworkEvent
+from common.event_module import EventDispatcher as dispatcher
+from common.service_register import service_register
 import signal
 import string
 import sys

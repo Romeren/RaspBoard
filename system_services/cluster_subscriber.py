@@ -1,5 +1,5 @@
-from service_framework.common.a_plugin import ThreadHandler as superClass
-from service_framework.common.event_module import Event as frameworkEvent
+from a_service import ThreadHandler as superClass
+from common.event_module import Event as frameworkEvent
 import pyaes
 import zmq
 

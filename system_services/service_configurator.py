@@ -1,4 +1,4 @@
-from service_framework.common.a_plugin import RestHandler as superClass
+from a_service import RestHandler as superClass
 
 
 encryption_key = None

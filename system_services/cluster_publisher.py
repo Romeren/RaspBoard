@@ -1,4 +1,4 @@
-from service_framework.common.a_plugin import ThreadHandler as superClass
+from a_service import ThreadHandler as superClass
 import pyaes
 import time
 import zmq

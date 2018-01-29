@@ -1,33 +1,33 @@
 # -*- coding: utf-8 -*-  # NOQA
-from service_framework.container import Container as framework
+from container import Container as framework
 # plugins:
 plugins = []
 
-from service_framework.system_services.cluster_publisher import config as pub
-from service_framework.system_services.cluster_subscriber import config as sub
+from system_services.cluster_publisher import config as pub
+from system_services.cluster_subscriber import config as sub
 
 plugins.append(pub)
 plugins.append(sub)
 
-from service_framework.system_services.service_registry_share import config as share
+from system_services.service_registry_share import config as share
 plugins.append(share)
 
-from service_framework.system_services.service_terminal_log import config as log
+from system_services.service_terminal_log import config as log
 plugins.append(log)
 
-from service_framework.system_services.service_configurator import config as config
+from system_services.service_configurator import config as config
 plugins.append(config)
 
-from service_framework.system_services.service_discovery import config as discovery
+from system_services.service_discovery import config as discovery
 plugins.append(discovery)
 
-from service_framework.system_services.service_connector import config as connector
+from system_services.service_connector import config as connector
 plugins.append(connector)
 
-from service_framework.system_services.Killer import config as kill
+from system_services.Killer import config as kill
 plugins.append(kill)
 
-from service_framework.common.read_file import get_content, get_id
+from common.read_file import get_content, get_id
 
 raspboard_id = get_id('raspboard.id')
 cluster_authentication = get_content('cluster_key.key')
@@ -46,7 +46,7 @@ framework(plugins,
 
 
 
-# from service_framework.plugin_module import Plugin_module as framework  # NOQA
+# from plugin_module import Plugin_module as framework  # NOQA
 #
 # from services.misc.restserver import config as java  # NOQA
 # plugins.append(java)
