@@ -57,8 +57,9 @@ class Service(superClass):
             isSuccess, raspid, event = self.parse_msg_to_event(msg)
             if(isSuccess):
                 if(event.type == 'PUBLISH_KEY_CHANGED'):
-                    self.keys[raspid] = event.data
-                    self.module.dispatch_event('LOG', (8, 'CHANGED SUBSCRIBE KEY', raspid, event.data, config['service_name']))
+                    if(raspid in self.keys and evnet.data != self.keys[raspid]):
+                        self.keys[raspid] = event.data
+                        self.module.dispatch_event('LOG', (8, 'CHANGED SUBSCRIBE KEY', raspid, event.data, config['service_name']))
                 elif(event.type == 'TERMINATING' and raspid in self.keys):
                     self.keys.pop(raspid, None)
                 else:
