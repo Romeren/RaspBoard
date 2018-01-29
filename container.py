@@ -20,7 +20,7 @@ import time
 class Container(object):
     """docstring for Container"""
 
-    def __init__(self, services, settings={}):
+    def __init__(self, settings={}):
         chars = string.ascii_letters + string.digits
         application_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))
@@ -50,12 +50,10 @@ class Container(object):
         # Services configuration:
         self.app = None
         self.service_register = service_register(self)
-        self.configure_module(services)
         # Running Threads:
         self.threads = {}
         self.stop_event = Event()  # Safely stopping services on exits:
         self.is_exiting = True  # Safely stopping services on exits:
-        self.start_threads()
 
         # Add exit handler:
         atexit.register(self.termination_handler)
@@ -63,53 +61,42 @@ class Container(object):
 
         self.__setup_default_settings__()
 
-        self.start_webserver()
+        t = Thread(target=self.start_webserver)
+        t.daemon = True
+        t.start()
 
     def start_webserver(self):
-        # set up tornado frame work:
-        self.dispatch_event('LOG', (10, 'Starting webserver...', 'CONTAINER'))
-        self.dispatch_event('LOG', (10, 'Webserver listinging on port', self.port))
-
-        paths = []
-        self.dispatch_event('LOG', (1, 'Available paths on webserver:'))
-        topic = 'rest/.*/.*/' + self.ip_address
-        for config in self.get_services(topic):
-            path = self.make_path_config(config)
-            self.dispatch_event('LOG', (10, path[0]))
-            paths.append(path)
-        topic = 'websocket/.*/.*/' + self.ip_address
-        for config in self.get_services(topic):
-            path = self.make_path_config(config)
-            self.dispatch_event('LOG', (10, path[0]))
-            paths.append(path)
-
         # add listener to port:
-        self.app = web.Application(paths, **self.settings)
+        self.app = web.Application([], **self.settings)
         self.app.listen(self.port)
         ioloop.IOLoop.instance().start()
 
-    def start_threads(self):
-        self.dispatch_event('LOG', (10, 'Starting threads', 'CONTAINER'))
-        topic = 'thread/.*/.*/' + self.ip_address
-        for config in self.get_services(topic):
-            path = self.make_path_config(config)
-            self.dispatch_event('LOG', (10, path[0]))
-            module = config["handler"]()
-            t = Thread(target=module.initialize, args=(self,
-                                                       self.stop_event
-                                                       ))
+    def add_service(self, config):
+        if('host_address' not in config):
+            config['host_address'] = self.ip_address
+        if('port' not in config):
+            config['port'] = self.port
+        if(self.service_register.build_topic(config) in self.service_register.services):
+            return # skip if exists
+
+        self.service_register.add_service(config)
+        
+        if('handler' not in config):
+            return
+        
+        path = self.make_path_config(config)
+        if(config['service_type'] == 'thread'):
+            handler = config["handler"]()
+            t = Thread(target=handler.initialize, args=(self,
+                                                    self.stop_event
+                                                    ))
             t.daemon = True
             self.threads[self.service_register.build_topic(config)] = t
             t.start()
-
-    def configure_module(self, services):
-        for config in services:
-            config['host_address'] = self.ip_address
-            config['port'] = self.port
-            self.service_register.add_service(config)
-
-    def add_service(self, config):
-        self.service_register.add_service(config)
+        elif(config['service_type'] == 'rest'):
+            self.app.add_handlers(r'', [path])
+        elif(config['service_type'] == 'websocket'):
+            self.app.add_handlers(r'', [path])
 
     def get_services(self, topic):
         return self.service_register.get_services(topic)

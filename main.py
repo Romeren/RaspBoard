@@ -1,31 +1,28 @@
 # -*- coding: utf-8 -*-  # NOQA
-from container import Container as framework
-# plugins:
-plugins = []
+from container import Container
+
+services = []
 
 from system_services.cluster_publisher import config as pub
 from system_services.cluster_subscriber import config as sub
 
-plugins.append(pub)
-plugins.append(sub)
+services.append(pub)
+services.append(sub)
 
 from system_services.service_registry_share import config as share
-plugins.append(share)
+services.append(share)
 
 from system_services.service_terminal_log import config as log
-plugins.append(log)
+services.append(log)
 
 from system_services.service_configurator import config as config
-plugins.append(config)
+services.append(config)
 
 from system_services.service_discovery import config as discovery
-plugins.append(discovery)
+services.append(discovery)
 
 from system_services.service_connector import config as connector
-plugins.append(connector)
-
-from system_services.Killer import config as kill
-plugins.append(kill)
+services.append(connector)
 
 from common.read_file import get_content, get_id
 
@@ -39,11 +36,13 @@ system_settings = {
                    'cluster_authentication': cluster_authentication,
                    'LOG_LEVEL': '0'
                    }
-framework(plugins,
-          settings=system_settings)
+container = Container(settings=system_settings)
+
+for s in services:
+    container.add_service(s)
 
 
-
+raw_input('-------HIT-ENTER-TO-QUIT--------')
 
 
 # from plugin_module import Plugin_module as framework  # NOQA
