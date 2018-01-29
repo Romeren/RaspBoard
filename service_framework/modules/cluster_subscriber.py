@@ -64,23 +64,15 @@ class Service(superClass):
                 else:
                     self.module.event_dispatcher.dispatch_event(event)
             else:
-                print(msg)
-                print(raspid)
-                print(event)
                 self.module.dispatch_event('LOG', (4, 'FAILED TO PARSE MSG', event, config['service_name']))
 
     def parse_msg_to_event(self, msg):
         rasp_id, msg = msg.split(' ', 1)
         
         if(rasp_id in self.keys):
-            print('MESSAGE')
             key = self.keys[rasp_id]
-            print(msg)
             aes = pyaes.AESModeOfOperationCTR(key.decode('base-64'))
             msg = aes.decrypt(msg)
-            print('DECRYPT')
-            print(msg)
-            print('HEST')
         try:
             e_t, e_org, e_d = msg.split(' ', 2)
             
