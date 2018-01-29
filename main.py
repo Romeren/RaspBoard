@@ -3,28 +3,28 @@ from service_framework.container import Container as framework
 # plugins:
 plugins = []
 
-from service_framework.modules.cluster_publisher import config as pub
-from service_framework.modules.cluster_subscriber import config as sub
+from service_framework.system_services.cluster_publisher import config as pub
+from service_framework.system_services.cluster_subscriber import config as sub
 
 plugins.append(pub)
 plugins.append(sub)
 
-from service_framework.modules.service_registry_share import config as share
+from service_framework.system_services.service_registry_share import config as share
 plugins.append(share)
 
-from service_framework.modules.service_terminal_log import config as log
+from service_framework.system_services.service_terminal_log import config as log
 plugins.append(log)
 
-from service_framework.modules.service_configurator import config as config
+from service_framework.system_services.service_configurator import config as config
 plugins.append(config)
 
-from service_framework.modules.service_discovery import config as discovery
+from service_framework.system_services.service_discovery import config as discovery
 plugins.append(discovery)
 
-from service_framework.modules.service_connector import config as connector
+from service_framework.system_services.service_connector import config as connector
 plugins.append(connector)
 
-from service_framework.modules.Killer import config as kill
+from service_framework.system_services.Killer import config as kill
 plugins.append(kill)
 
 from service_framework.common.read_file import get_content, get_id

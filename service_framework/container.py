@@ -21,8 +21,6 @@ class Container(object):
     """docstring for Container"""
 
     def __init__(self, services, settings={}):
-        reload(sys)  
-        sys.setdefaultencoding('utf8')
         chars = string.ascii_letters + string.digits
         application_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))
@@ -58,6 +56,10 @@ class Container(object):
         self.stop_event = Event()  # Safely stopping services on exits:
         self.is_exiting = True  # Safely stopping services on exits:
         self.start_threads()
+
+        # Add exit handler:
+        atexit.register(self.termination_handler)
+        signal.signal(signal.SIGINT, self.exit_handler)
 
         self.__setup_default_settings__()
 
@@ -116,10 +118,6 @@ class Container(object):
         return self.service_register.build_topic(config)
 
     def __setup_default_settings__(self):
-        # Add exit handler:
-        atexit.register(self.termination_handler)
-        signal.signal(signal.SIGINT, self.exit_handler)
-
         # add handlers for added services
         if('ui_modules' not in self.settings):
             self.settings["ui_modules"] = {
@@ -165,9 +163,9 @@ class Container(object):
 
     def add_event_listener(self, event_type, listener):
         self.event_dispatcher.add_event_listener(event_type, listener)
-# --------------------------------------------------------
-# Exit and termination handlers:
-# --------------------------------------------------------
+    # --------------------------------------------------------
+    # Exit and termination handlers:
+    # --------------------------------------------------------
 
     def termination_handler(self):
         if(not self.stop_event.is_set()):
