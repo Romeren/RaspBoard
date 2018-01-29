@@ -6,23 +6,23 @@ services = []
 from system_services.service_starter import config as starter
 from system_services.service_stopper import config as stopper
 
-from system_services.cluster_publisher import config as pub
-from system_services.cluster_subscriber import config as sub
-from system_services.service_registry_share import config as share
+# from system_services.cluster_publisher import config as pub
+# from system_services.cluster_subscriber import config as sub
+# from system_services.service_registry_share import config as share
 from system_services.service_terminal_log import config as log
-from system_services.service_configurator import config as config
-from system_services.service_discovery import config as discovery
-from system_services.service_connector import config as connector
+# from system_services.service_configurator import config as config
+# from system_services.service_discovery import config as discovery
+# from system_services.service_connector import config as connector
 
 services.append(log)
 services.append(starter)
 services.append(stopper)
-services.append(pub)
-services.append(sub)
-services.append(share)
-services.append(config)
-services.append(discovery)
-services.append(connector)
+# services.append(pub)
+# services.append(sub)
+# services.append(share)
+# services.append(config)
+# services.append(discovery)
+# services.append(connector)
 
 from common.read_file import get_content, get_id
 
