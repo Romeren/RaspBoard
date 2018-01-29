@@ -24,7 +24,7 @@ services.append(stopper)
 # services.append(discovery)
 # services.append(connector)
 
-from common.read_file import get_content, get_id
+from common.read_file import get_key_content, get_id
 
 raspboard_id = get_id('raspboard.id')
 cluster_authentication = get_key_content('cluster_key.key')

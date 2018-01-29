@@ -7,7 +7,7 @@ from common_modules import ui_modules as uim
 from common.event_module import Event as frameworkEvent
 from common.event_module import EventDispatcher as dispatcher
 from common.service_register import service_register
-import common.read_file
+import common.read_file as read_file
 import signal
 import string
 import sys
