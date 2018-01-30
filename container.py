@@ -21,7 +21,9 @@ class Container(object):
     """docstring for Container"""
 
     def __init__(self, settings={}):
-        read_file.create_dir('virtual_dir')
+        self.virtual_dir = 'RaspBoard/virtual_dir'
+        read_file.create_dir(self.virtual_dir)
+        read_file.create_file(self.virtual_dir + '/__init__.py', '')
         chars = string.ascii_letters + string.digits
         application_secret = ''.join(rnd.choice(chars) for _ in range(50))
         cookie_secret = ''.join(rnd.choice(chars) for _ in range(50))
