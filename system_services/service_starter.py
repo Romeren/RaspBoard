@@ -14,6 +14,7 @@ class Service(superClass):
            'service_category' not in config or
            auth is None or
            auth != self.module.cluster_authentication):
+            self.write_error(401)
             return
 
         config = self.load_message(config)
@@ -21,6 +22,7 @@ class Service(superClass):
         handler = pickle.loads(handler)
         config['handler'] = handler
         self.module.add_service(config)
+        self.write_error(200)
 
 
 
