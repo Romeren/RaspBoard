@@ -16,12 +16,14 @@ class Service(superClass):
            auth != self.module.cluster_authentication):
             self.write_error(401)
             return
-
+        
+        print(config)
         config = self.load_message(config)
         handler = str(config['handler'])
         handler = pickle.loads(handler)
         config['handler'] = handler
         self.module.add_service(config)
+        print("ending")
         self.write_error(200)
 
 
