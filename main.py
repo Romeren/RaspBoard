@@ -15,7 +15,7 @@ services.append(stopper)
 from common.read_file import get_key_content, get_id
 
 raspboard_id = get_id('raspboard.id')
-cluster_authentication = get_key_content('cluster_key.key')
+cluster_authentication = get_key_content('RaspBoard/cluster_key.key')
 system_settings = {
                    'raspboard_id': raspboard_id,
                    'port': 8080,
