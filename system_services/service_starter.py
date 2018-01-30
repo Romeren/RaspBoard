@@ -9,18 +9,19 @@ class Service(superClass):
         print('START SERVICE')
         config = self.get_argument("config", None)
         auth = self.get_argument("authentication", None)
-        print(config)
-        if('service_name' not in config or
-           'handler' not in config or
-           'service_type' not in config or
-           'service_category' not in config or
-           auth is None or
+        if(auth is None or
            auth != self.module.cluster_authentication):
             self.write_error(401)
             return
         
-        print(config)
         config = self.load_message(config)
+        if('service_name' not in config or
+           'handler' not in config or
+           'service_type' not in config or
+           'service_category' not in config):
+            self.write_error(401)
+            return
+        print(config)
         handler = str(config['handler'])
         handler = pickle.loads(handler)
         config['handler'] = handler
