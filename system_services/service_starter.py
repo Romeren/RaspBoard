@@ -11,7 +11,7 @@ class Service(superClass):
         auth = self.get_argument("authentication", None)
         if(auth is None or
            auth != self.module.cluster_authentication):
-            self.write_error(401)
+            print('auth', auth)
             return
         
         config = self.load_message(config)
@@ -19,7 +19,7 @@ class Service(superClass):
            'handler' not in config or
            'service_type' not in config or
            'service_category' not in config):
-            self.write_error(401)
+            print('config', config)
             return
         print(config)
         handler = str(config['handler'])
