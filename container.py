@@ -135,9 +135,9 @@ class Container(object):
             self.threads[self.service_register.build_topic(config)] = (t, e)
             t.start()
         elif(config['service_type'] == 'rest'):
-            self.app.add_handlers(r'', [path])
+            self.app.add_handlers(r'.*$', [path])
         elif(config['service_type'] == 'websocket'):
-            self.app.add_handlers(r'', [path])
+            self.app.add_handlers(r'.*$', [path])
 
     def get_services(self, topic):
         return self.service_register.get_services(topic)
