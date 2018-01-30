@@ -9,7 +9,7 @@ class Service(superClass):
         print('START SERVICE')
         config = self.get_argument("config", None)
         auth = self.get_argument("authentication", None)
-        print('AUTH')
+        print(config)
         if('service_name' not in config or
            'handler' not in config or
            'service_type' not in config or
