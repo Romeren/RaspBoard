@@ -12,6 +12,7 @@ class Service(superClass):
         if(auth is None or
            auth != self.module.cluster_authentication):
             print('auth', auth)
+            print('self-auth', self.module.cluster_authentication)
             return
         
         config = self.load_message(config)
